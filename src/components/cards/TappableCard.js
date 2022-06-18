@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { TouchableHighlight, View } from 'react-native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 import { memo, useMemo } from '../../types/reactHooks'
@@ -15,10 +15,12 @@ import { Card } from './Card'
  */
 const TappableCardComponent = ({
   children,
+  disabled = false,
   nonTappable = false,
   onPress
 }: {
   children: React.Node,
+  disabled?: boolean,
   nonTappable?: boolean,
   onPress?: any => Promise<void> | void
 }) => {
@@ -28,14 +30,16 @@ const TappableCardComponent = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableHighlight onPress={disabled ? null : onPress}>
         <Card>
           <View style={styles.cardContainer}>
             <View style={styles.spacedContainer}>{memodChildren}</View>
-            {nonTappable ? null : <FontAwesome5 name="chevron-right" size={theme.rem(1.25)} color={theme.iconTappable} style={styles.chevron} />}
+            {nonTappable ? null : (
+              <FontAwesome5 name="chevron-right" size={theme.rem(1.25)} color={disabled ? theme.deactivatedText : theme.iconTappable} style={styles.chevron} />
+            )}
           </View>
         </Card>
-      </TouchableOpacity>
+      </TouchableHighlight>
     </View>
   )
 }
