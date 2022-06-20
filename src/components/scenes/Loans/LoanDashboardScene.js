@@ -15,6 +15,7 @@ import { makeAaveBorrowPlugin, makeAaveKovanBorrowPlugin } from '../../../plugin
 import { type TempBorrowInfo, filterActiveBorrowInfos, getAaveBorrowInfo, getAaveBorrowInfos } from '../../../plugins/helpers/getAaveBorrowPlugins'
 import { memo, useEffect, useState } from '../../../types/reactHooks'
 import { useSelector } from '../../../types/reactRedux'
+import { type NavigationProp } from '../../../types/routerTypes'
 import { type Theme } from '../../../types/Theme'
 import { type FlatListItem, type GuiExchangeRates } from '../../../types/types'
 import { getCurrencyIconUris } from '../../../util/CdnUris'
@@ -29,8 +30,12 @@ import { Airship, redText, showError } from '../../services/AirshipInstance'
 import { cacheStyles, useTheme } from '../../services/ThemeContext'
 import { EdgeText } from '../../themed/EdgeText'
 import { SceneHeader } from '../../themed/SceneHeader'
+type Props = {
+  navigation: NavigationProp<'loanDetails'>
+}
 
-export const LoanDashboardSceneComponent = () => {
+export const LoanDashboardSceneComponent = (props: Props) => {
+  const { navigation } = props
   const theme = useTheme()
   const margin = sidesToMargin(mapSides(fixSides(0.5, 0), theme.rem))
   const styles = getStyles(theme)
@@ -75,16 +80,16 @@ export const LoanDashboardSceneComponent = () => {
       if (walletId != null) {
         const wallet = wallets[walletId]
         getAaveBorrowInfo(wallet.currencyInfo.pluginId === hardWalletPluginId ? makeAaveBorrowPlugin() : makeAaveKovanBorrowPlugin(), wallet)
-          .then((borrowInfo: TempBorrowInfo) => {
-            // navigation.navigate('loanDetails', { borrowEngine: borrowInfo.borrowEngine, borrowPlugin: borrowInfo.borrowPlugin })
-          })
+          .then((borrowInfo: TempBorrowInfo) =>
+            navigation.navigate('loanDetails', { borrowEngine: borrowInfo.borrowEngine, borrowPlugin: borrowInfo.borrowPlugin })
+          )
           .catch(err => redText(err.message))
       }
     })
   })
 
   const renderLoanCard = useHandler((item: FlatListItem<any>) => {
-    const { borrowEngine } = item.item
+    const { borrowEngine, borrowPlugin } = item.item
     const { currencyWallet: wallet, collaterals, debts } = borrowEngine
     const isoFiatCurrencyCode = wallet.fiatCurrencyCode
     const fiatCurrencyCode = isoFiatCurrencyCode.replace('iso:', '')
@@ -113,7 +118,7 @@ export const LoanDashboardSceneComponent = () => {
         <TappableCard
           onPress={() => {
             // TODO: After LoanDetailsScene implementation
-            // navigation.navigate('loanDetails', { borrowEngine, borrowPlugin })
+            navigation.navigate('loanDetails', { borrowEngine, borrowPlugin })
           }}
         >
           <View style={styles.cardContainer}>
