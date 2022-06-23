@@ -34,6 +34,7 @@ import { FioSentRequestDetailsScene } from '../components/scenes/FioSentRequestD
 import { PromotionSettingsScene } from '../components/scenes/PromotionSettingsScene.js'
 import { SwapSettingsScene } from '../components/scenes/SwapSettingsScene.js'
 import { TransactionsExportScene } from '../components/scenes/TransactionsExportScene.js'
+import { WaitScene } from '../components/scenes/WaitScene.js'
 import { WalletListScene } from '../components/scenes/WalletListScene.js'
 import { requestPermission } from '../components/services/PermissionsManager.js'
 import { ControlPanel } from '../components/themed/ControlPanel'
@@ -488,7 +489,16 @@ export class MainComponent extends React.Component<Props> {
               renderRightButton={this.renderEmptyButton()}
             />
           </Stack>
-
+          <Stack key="waitScene" hideTabBar>
+            <Scene
+              key="waitScene"
+              component={withNavigation(ifLoggedIn(WaitScene))}
+              navTransparent
+              renderTitle=""
+              renderLeftButton={<BackButton onPress={this.handleBack} />}
+              renderRightButton={this.renderEmptyButton()}
+            />
+          </Stack>
           <Stack key="settingsOverviewTab" hideDrawerButton>
             <Scene
               key="settingsOverview"

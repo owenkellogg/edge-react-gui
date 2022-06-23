@@ -1,245 +1,176 @@
 // @flow
 
-import type { EdgeLobby } from 'edge-core-js'
 import * as React from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
-import { isIPhoneX } from 'react-native-safe-area-view'
 import { sprintf } from 'sprintf-js'
 
 import { lobbyLogin } from '../../actions/EdgeLoginActions.js'
+import { useHandler } from '../../hooks/useHandler.js'
 import s from '../../locales/strings.js'
-import { PrimaryButton } from '../../modules/UI/components/Buttons/PrimaryButton.ui.js'
-import { SecondaryButton } from '../../modules/UI/components/Buttons/SecondaryButton.ui.js'
 import { config } from '../../theme/appConfig.js'
-import { THEME } from '../../theme/variables/airbitz'
-import { connect } from '../../types/reactRedux.js'
+import { useDispatch, useSelector } from '../../types/reactRedux.js'
 import { type NavigationProp } from '../../types/routerTypes.js'
 import { SceneWrapper } from '../common/SceneWrapper.js'
+import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext'
+import { TitleText } from '../text/TitleText'
+import { Alert } from '../themed/Alert'
+import { MainButton } from '../themed/MainButton.js'
 
-type OwnProps = {
+type Props = {
   navigation: NavigationProp<'edgeLogin'>
 }
-type StateProps = {
-  error: string | null,
-  isProcessing: boolean,
-  lobby: EdgeLobby | null
-}
 
-type DispatchProps = {
-  accept: () => void
-}
+export const EdgeLoginScene = (props: Props) => {
+  const theme = useTheme()
+  const styles = getStyles(theme)
 
-type Props = StateProps & DispatchProps & OwnProps
+  const { navigation } = props
+  const error = useSelector(state => state.core.edgeLogin.error)
+  const isProcessing = useSelector(state => state.core.edgeLogin.isProcessing)
+  const lobby = useSelector(state => state.core.edgeLogin.lobby)
+  const dispatch = useDispatch()
 
-export class EdgeLoginSceneComponent extends React.Component<Props> {
-  renderBody() {
-    let message = this.props.error
-    if (!this.props.error) {
+  const handlePress = useHandler(() => {
+    navigation.navigate('waitScene', { message: s.strings.edge_login_fetching_message })
+    dispatch(lobbyLogin()).then(() => {
+      navigation.goBack()
+    })
+  })
+
+  const renderBody = useHandler(() => {
+    let message = error ?? ''
+
+    if (!error) {
       message = sprintf(s.strings.access_wallet_description, config.appName)
     }
-    if (!this.props.lobby && !this.props.error) {
+
+    if (!lobby && !error) {
       throw new Error('Not normal expected behavior')
     }
-    if (this.props.lobby && this.props.lobby.loginRequest && this.props.lobby.loginRequest.appId === '') {
-      message = sprintf(s.strings.edge_description_warning, this.props.lobby.loginRequest.displayName)
+    if (lobby && lobby.loginRequest && lobby.loginRequest.appId === '') {
+      message = sprintf(s.strings.edge_description_warning, lobby.loginRequest.displayName)
     }
     return (
-      <View style={styles.body}>
-        <Text style={styles.bodyText}>{message}</Text>
+      <View style={styles.warning}>
+        <Alert title={s.strings.string_warning} message={message} type="warning" numberOfLines={6} style={styles.warning} />
       </View>
     )
-  }
+  })
 
-  renderButtons() {
-    const { navigation } = this.props
+  const renderButtons = useHandler(() => {
     const handleDecline = () => navigation.goBack()
-
-    if (this.props.isProcessing) {
+    if (isProcessing) {
       return (
         <View style={styles.buttonsProcessing}>
-          <ActivityIndicator color={THEME.COLORS.ACCENT_MINT} />
+          <ActivityIndicator color={theme.primaryText} size="large" />
         </View>
       )
     }
-    if (this.props.error) {
+    if (error) {
       return (
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttons}>
-            <SecondaryButton style={styles.cancelSolo} onPress={handleDecline}>
-              <SecondaryButton.Text>{s.strings.string_cancel_cap}</SecondaryButton.Text>
-            </SecondaryButton>
-          </View>
+        <View style={styles.buttons}>
+          <MainButton label={s.strings.string_cancel_cap} type="escape" onPress={handleDecline} />
         </View>
       )
     }
     return (
-      <View style={styles.buttonContainer}>
-        <View style={styles.buttons}>
-          <SecondaryButton style={styles.cancel} onPress={handleDecline}>
-            <SecondaryButton.Text>{s.strings.string_cancel_cap}</SecondaryButton.Text>
-          </SecondaryButton>
-          <PrimaryButton style={styles.submit} onPress={this.props.accept}>
-            <PrimaryButton.Text>{s.strings.accept_button_text}</PrimaryButton.Text>
-          </PrimaryButton>
-        </View>
+      <View style={styles.buttons}>
+        <MainButton marginRem={[1, 0, 1, 0]} label={s.strings.accept_button_text} onPress={handlePress} />
+        <MainButton label={s.strings.string_cancel_cap} type="escape" onPress={handleDecline} />
       </View>
     )
-  }
+  })
 
-  renderImage() {
-    if (this.props.lobby && this.props.lobby.loginRequest && this.props.lobby.loginRequest.displayImageUrl) {
-      return <FastImage style={styles.image} resizeMode="contain" source={{ uri: this.props.lobby.loginRequest.displayImageUrl }} />
+  const renderImage = useHandler(() => {
+    if (lobby && lobby?.loginRequest && lobby?.loginRequest?.displayImageUrl) {
+      return <FastImage source={theme.primaryLogo} style={styles.logo} resizeMode="contain" />
     }
     return null
-  }
+  })
 
-  renderHeader() {
+  const renderHeader = useHandler(() => {
     let title = ''
-    if (this.props.lobby && this.props.lobby.loginRequest) {
-      title = this.props.lobby.loginRequest.displayName ? this.props.lobby.loginRequest.displayName : ''
+    if (lobby && lobby.loginRequest) {
+      title = lobby.loginRequest.displayName ? lobby.loginRequest.displayName : ''
     }
-    if (this.props.lobby) {
+    if (lobby) {
       return (
         <View style={styles.header}>
-          <View style={styles.headerTopShim} />
-          <View style={styles.headerImageContainer}>{this.renderImage()}</View>
-          <View style={styles.headerTopShim} />
-          <View style={styles.headerTextRow}>
-            <Text style={styles.bodyText}>{title}</Text>
-          </View>
-          <View style={styles.headerBottomShim} />
+          <TitleText style={styles.title}>{title}</TitleText>
         </View>
       )
     }
     return <View style={styles.header} />
-  }
+  })
 
-  render() {
-    if (!this.props.lobby && !this.props.error) {
-      return (
-        <SceneWrapper background="body">
-          <View style={styles.spinnerContainer}>
-            <Text style={styles.loadingTextBody}>{s.strings.edge_login_fetching}</Text>
-            <ActivityIndicator color={THEME.COLORS.ACCENT_MINT} />
-          </View>
-        </SceneWrapper>
-      )
-    }
+  if (!lobby && !error) {
     return (
-      <SceneWrapper background="body">
-        {this.renderHeader()}
-        {this.renderBody()}
-        {this.renderButtons()}
+      <SceneWrapper background="theme">
+        <View style={styles.spinnerContainer}>
+          <TitleText style={styles.spinnerText}>{s.strings.edge_login_fetching}</TitleText>
+          <ActivityIndicator color={theme.primaryText} size="large" />
+        </View>
       </SceneWrapper>
     )
   }
+  return (
+    <SceneWrapper background="theme">
+      {renderImage()}
+      {renderHeader()}
+      {renderBody()}
+      {renderButtons()}
+    </SceneWrapper>
+  )
 }
 
-const rawStyles = {
+const getStyles = cacheStyles((theme: Theme) => ({
+  view: {
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  },
+  logo: {
+    marginVertical: theme.rem(2),
+    height: theme.rem(3.25)
+  },
   header: {
-    position: 'relative',
-    flex: 3,
-    flexDirection: 'column'
+    display: 'flex',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-evenly'
   },
-  headerTopShim: {
-    flex: 2
+  title: {
+    fontSize: theme.rem(1.25)
   },
-  headerImageContainer: {
-    flex: 4,
-    alignItems: 'center',
-    justifyContent: 'space-around'
-  },
-  image: {
-    width: 80,
-    height: 80
-  },
-  headerTextRow: {
-    flex: 3,
-    alignItems: 'center',
-    justifyContent: 'space-around'
-  },
-  headerBottomShim: {
-    flex: 1
-  },
-  body: {
-    position: 'relative',
-    flex: 4
+  warning: {
+    flex: 3
   },
   buttonContainer: {
     position: 'relative',
-    flex: 3,
     flexDirection: 'column',
     width: '100%',
     justifyContent: 'flex-end'
   },
   buttons: {
-    marginRight: '5%',
-    marginLeft: '5%',
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    paddingBottom: isIPhoneX ? 30 : 20
-  },
-  buttonsProcessing: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginHorizontal: theme.rem(1),
+    marginVertical: theme.rem(2)
   },
   spinnerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  bodyText: {
-    marginRight: '5%',
-    marginLeft: '5%',
-    color: THEME.COLORS.GRAY_1,
-    fontSize: 18,
-    textAlign: 'center',
-    fontFamily: THEME.FONTS.DEFAULT
+  spinnerText: {
+    marginBottom: theme.rem(1)
   },
-  loadingTextBody: {
-    color: THEME.COLORS.GRAY_1,
-    fontSize: 18,
-    textAlign: 'center',
-    fontFamily: THEME.FONTS.DEFAULT,
-    marginBottom: 20
-  },
-  cancel: {
+  loadingSpinner: {
     flex: 1,
-    marginRight: '1.5%',
-    backgroundColor: THEME.COLORS.GRAY_2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 3
+    alignSelf: 'center'
   },
-  cancelSolo: {
+  buttonsProcessing: {
     flex: 1,
-    backgroundColor: THEME.COLORS.GRAY_2,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 3
-  },
-  submit: {
-    flex: 1,
-    marginLeft: '1.5%',
-    backgroundColor: THEME.COLORS.SECONDARY,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 3
+    alignItems: 'center'
   }
-}
-const styles: typeof rawStyles = StyleSheet.create(rawStyles)
-
-export const EdgeLoginScene = connect<StateProps, DispatchProps, OwnProps>(
-  state => ({
-    error: state.core.edgeLogin.error,
-    isProcessing: state.core.edgeLogin.isProcessing,
-    lobby: state.core.edgeLogin.lobby
-  }),
-  dispatch => ({
-    accept() {
-      dispatch(lobbyLogin())
-    }
-  })
-)(EdgeLoginSceneComponent)
+}))

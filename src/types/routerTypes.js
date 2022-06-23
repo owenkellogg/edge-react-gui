@@ -239,6 +239,9 @@ export type ParamList = {
     sourceWallet: EdgeCurrencyWallet,
     currencyCode: string
   |},
+  waitScene: {|
+    message: string
+  |},
   walletList: void,
   walletListScene: void,
   wcConnections: void,
