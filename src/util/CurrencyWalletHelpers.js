@@ -32,6 +32,7 @@ export const getAvailableBalance = (wallet: EdgeCurrencyWallet, tokenCode?: stri
   return balance
 }
 
+// TODO: Update to use tokenId. Integrate into the rest of the code base where the deprecated enableTokens is used.
 export const enableToken = async (currencyCode: string, wallet: EdgeCurrencyWallet) => {
   const allTokens = wallet.currencyConfig.allTokens
   const newTokenId = Object.keys(allTokens).find(tokenId => allTokens[tokenId].currencyCode.toUpperCase() === currencyCode.toUpperCase())
