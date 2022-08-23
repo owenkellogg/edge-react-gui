@@ -119,7 +119,7 @@ export const LoanDashboardScene = (props: Props) => {
   const renderLoanCard = useHandler((item: FlatListItem<TempBorrowInfo>) => {
     const borrowInfo: TempBorrowInfo = item.item
     const handleLoanPress = () => {
-      navigation.navigate('loanCreate', { borrowEngine: borrowInfo.borrowEngine, borrowPlugin: borrowInfo.borrowPlugin })
+      navigation.navigate('loanDetails', { borrowEngine: borrowInfo.borrowEngine, borrowPlugin: borrowInfo.borrowPlugin })
     }
     return <LoanSummaryCard onPress={handleLoanPress} borrowEngine={borrowInfo.borrowEngine} iconUri={iconUri} exchangeRates={exchangeRates} />
   })

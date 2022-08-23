@@ -77,7 +77,7 @@ export const LoanCreateScene = (props: Props) => {
 
   const srcWallet = srcWalletId == null ? null : wallets[srcWalletId]
   const srcPluginId = srcWallet == null ? null : srcWallet.currencyInfo.pluginId
-  const srcToken = useMemo(() => (srcTokenId != null && srcPluginId != null ? allTokens[srcPluginId][srcTokenId] : {}), [allTokens, srcPluginId, srcTokenId])
+  const srcToken = useMemo(() => (srcTokenId != null && srcPluginId != null ? allTokens[srcPluginId][srcTokenId] : null), [allTokens, srcPluginId, srcTokenId])
   const srcBalance = useWalletBalance(srcWallet ?? beWallet, srcTokenId) // HACK: Balance isn't being used anyway if the src wallet hasn't been chosen yet. Default to the borrow engine wallet in this case so this hook can be used
   const srcWalletName = useWalletName(srcWallet ?? beWallet) // HACK: srcWalletName is used for the warning card display, which would never show unless the srcWallet has been set.
   const srcAssetName = srcToken != null ? srcToken.displayName : srcWallet != null ? srcWallet.currencyInfo.displayName : ''
@@ -134,6 +134,7 @@ export const LoanCreateScene = (props: Props) => {
         if (isWithdrawToBank) {
           setIsDestBank(true)
           setDestWallet(beWallet)
+          setDestTokenId(hardDestTokenAddr)
         } else if (walletId != null && currencyCode != null) {
           const selectedWallet = wallets[walletId]
           const { tokenId } = guessFromCurrencyCode(account, { currencyCode, pluginId: selectedWallet.currencyInfo.pluginId })
@@ -228,7 +229,7 @@ export const LoanCreateScene = (props: Props) => {
     // If the user has not yet selected a destWallet, we wouldn't be showing
     // any exchange rate, anyway, so just pass beWallet to allow this hook not to puke.
   })
-  const { denominations: destDenoms } = { denominations: null } // destToken != null ? destToken : destWallet != null ? destWallet.currencyInfo : {}
+  const { denominations: destDenoms } = destTokenId != null ? allTokens[bePluginId][destTokenId] : destWallet != null ? destWallet.currencyInfo : {}
   const destExchangeMultiplier = destDenoms == null ? '0' : destDenoms[0].multiplier
   const nativeBorrowAmountCrypto = !isUserInputComplete
     ? '0'
