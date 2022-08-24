@@ -16,7 +16,7 @@ type WyreClient = {
   getCryptoPaymentMethod(wallet: EdgeCurrencyWallet): Promise<string | void>
 }
 
-const { baseUri } = ENV.WYRE_CLIENT_INIT
+const baseUri = 'https://api.testwyre.com/'
 
 /*
 This is an intermediary solution to interface with Wyre until the fiat-plugins
