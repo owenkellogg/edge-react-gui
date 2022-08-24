@@ -147,8 +147,6 @@ export const LoanCreateScene = (props: Props) => {
             setDestWallet(selectedWallet)
             setDestTokenId(tokenId)
 
-            // TODO: Handle exchange sell case
-            // Fetch APR based on borrow destination
             try {
               setIsLoading(true)
               setApr(await borrowEngine.getAprQuote(hardDestTokenAddr))
