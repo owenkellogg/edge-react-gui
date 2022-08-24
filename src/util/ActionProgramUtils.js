@@ -15,11 +15,13 @@ export const makeAaveBorrowAction = async ({
   borrowEngineWallet,
   borrowPluginId,
   borrowTokenId,
+  isDestBank,
   nativeAmount
 }: {
   borrowEngineWallet: EdgeCurrencyWallet,
   borrowPluginId: string,
   borrowTokenId?: string,
+  isDestBank?: boolean,
   nativeAmount: string
 }): Promise<ActionOp[]> => {
   const out = []
@@ -46,6 +48,17 @@ export const makeAaveBorrowAction = async ({
       tokenId: borrowTokenId ?? defaultTokenId,
       walletId: borrowEngineWallet.id
     })
+
+  // Construct the Withdraw to Bank action
+  if (isDestBank) {
+    out.push({
+      type: 'fiat-sell',
+      fiatPluginId: 'Wyre', // TODO: update after converting fiatPluginId to displayName
+      nativeAmount,
+      tokenId: borrowTokenId ?? defaultTokenId,
+      walletId: borrowEngineWallet.id
+    })
+  }
 
   return out
 }
@@ -102,10 +115,7 @@ export const makeAaveDepositAction = async ({
 }
 
 export const makeAaveRepayAction = async (borrowPluginId: string, nativeAmount: string, tokenId: string, wallet: EdgeCurrencyWallet) => {
-  // TODO: Spec out behavior for potentially repaying with a different asset.
-  const repayToken = getToken(wallet, tokenId)
-  if (repayToken == null) throw new Error(`Could not find repayment token ${tokenId} on ${wallet.currencyInfo.currencyCode} wallet`)
-  await enableToken(repayToken.currencyCode, wallet)
+  // TODO: update props + add logic to decide whether to swap, if the scene allows for such a use case.
   return {
     type: 'loan-repay',
     borrowPluginId,
@@ -116,9 +126,7 @@ export const makeAaveRepayAction = async (borrowPluginId: string, nativeAmount: 
 }
 
 export const makeAaveWithdrawAction = async (borrowPluginId: string, nativeAmount: string, tokenId: string, wallet: EdgeCurrencyWallet) => {
-  const withdrawalToken = getToken(wallet, tokenId)
-  if (withdrawalToken == null) throw new Error(`Could not find withdrawal token ${tokenId} on ${wallet.currencyInfo.currencyCode} wallet`)
-  await enableToken(withdrawalToken.currencyCode, wallet)
+  enableToken(tokenId, wallet)
   return {
     type: 'loan-withdraw',
     borrowPluginId,

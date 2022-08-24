@@ -432,7 +432,7 @@ async function evaluateAction(account: EdgeAccount, program: ActionProgram, stat
       const borrowEngine = await borrowPlugin.makeBorrowEngine(wallet)
 
       // Do the thing
-      const approvableAction = await borrowEngine.deposit({ nativeAmount, tokenId, pendingTxs })
+      const approvableAction = await borrowEngine.deposit({ nativeAmount, fromWallet: wallet, tokenId, pendingTxs })
 
       return await approvableActionToExecutableAction(approvableAction)
     }
