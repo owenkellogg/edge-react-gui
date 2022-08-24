@@ -3,7 +3,6 @@ import * as React from 'react'
 import { FlatList, TouchableOpacity } from 'react-native'
 import Ionicon from 'react-native-vector-icons/Ionicons'
 
-import { createWallet } from '../../../actions/CreateWalletActions'
 import { useAsyncValue } from '../../../hooks/useAsyncValue'
 import { useHandler } from '../../../hooks/useHandler'
 import { useWatch } from '../../../hooks/useWatch'
@@ -16,7 +15,7 @@ import { type NavigationProp } from '../../../types/routerTypes'
 import { type Theme } from '../../../types/Theme'
 import { type FlatListItem } from '../../../types/types'
 import { getCurrencyIconUris } from '../../../util/CdnUris'
-import { getCurrencyInfos, guessFromCurrencyCode } from '../../../util/CurrencyInfoHelpers'
+import { guessFromCurrencyCode } from '../../../util/CurrencyInfoHelpers'
 import { fixSides, mapSides, sidesToMargin } from '../../../util/sides'
 import { translateError } from '../../../util/translateError'
 import { Card } from '../../cards/Card'
@@ -85,9 +84,6 @@ export const LoanDashboardScene = (props: Props) => {
   // TODO: When new loan dApps are added, we will need a way to specify a way to select which dApp to add a new loan for.
   const handleAddLoan = useHandler(async () => {
     let newLoanWallet
-    const hardPluginWalletIds = Object.keys(wallets).filter(
-      walletId => wallets[walletId].currencyInfo.pluginId === hardWalletPluginId || wallets[walletId].currencyInfo.pluginId === 'ethereum'
-    )
 
     const { walletId: newLoanWalletId } = await Airship.show(bridge => (
       <WalletListModal bridge={bridge} headerTitle={s.strings.select_wallet} allowedAssets={[{ pluginId: hardWalletPluginId }, { pluginId: 'ethereum' }]} />
@@ -95,18 +91,17 @@ export const LoanDashboardScene = (props: Props) => {
 
     if (newLoanWalletId != null) newLoanWallet = wallets[newLoanWalletId]
 
-          }
-        }
-      )
-    else if (hardPluginWalletIds.length === 1) {
-      // If the user owns one polygon wallet, auto-select that wallet for the loan creation
-      newLoanWallet = wallets[hardPluginWalletIds[0]]
-    } else {
-      // If the user owns no polygon wallets, auto-create one
-      const hardCurrencyInfo = getCurrencyInfos(account).find(currencyInfo => currencyInfo.pluginId === hardWalletPluginId)
-      if (hardCurrencyInfo == null) throw new Error(`Could not auto-create ${hardWalletPluginId} wallet`)
-      newLoanWallet = await createWallet(account, { walletName: `AAVE ${hardCurrencyInfo.displayName}`, walletType: hardCurrencyInfo.walletType })
-    }
+    // if (hardPluginWalletIds.length > 1)
+    //   // Only show the wallet picker if the user owns more than one polygon wallet.
+    // else if (hardPluginWalletIds.length === 1) {
+    //   // If the user owns one polygon wallet, auto-select that wallet for the loan creation
+    //   newLoanWallet = wallets[hardPluginWalletIds[0]]
+    // } else {
+    //   // If the user owns no polygon wallets, auto-create one
+    //   const hardCurrencyInfo = getCurrencyInfos(account).find(currencyInfo => currencyInfo.pluginId === hardWalletPluginId)
+    //   if (hardCurrencyInfo == null) throw new Error(`Could not auto-create ${hardWalletPluginId} wallet`)
+    //   newLoanWallet = await createWallet(account, { walletName: `AAVE ${hardCurrencyInfo.displayName}`, walletType: hardCurrencyInfo.walletType })
+    // }
 
     if (newLoanWallet != null) {
       // Initialize new loan with the wallet from any of the above sources

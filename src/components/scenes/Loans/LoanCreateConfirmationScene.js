@@ -92,7 +92,12 @@ export const LoanCreateConfirmationScene = (props: Props) => {
 
   const renderFeeTile = useMemo(() => {
     if (depositApprovalAction == null || borrowApprovalAction == null) return
-    return <NetworkFeeTile wallet={srcWallet} nativeAmount={add(depositApprovalAction.networkFee.nativeAmount, borrowApprovalAction.networkFee.nativeAmount)} />
+    return (
+      <NetworkFeeTile
+        wallet={borrowEngineWallet}
+        nativeAmount={add(depositApprovalAction.networkFee.nativeAmount, borrowApprovalAction.networkFee.nativeAmount)}
+      />
+    )
   }, [borrowApprovalAction, depositApprovalAction, srcWallet])
 
   const onSliderComplete = async (resetSlider: () => void) => {
@@ -121,7 +126,7 @@ export const LoanCreateConfirmationScene = (props: Props) => {
       </Tile>
 
       <Tile type="static" title={s.strings.loan_destination}>
-        <CurrencyRow tokenId={destTokenId} wallet={destWallet} />
+        {isDestBank ? <EdgeText>{s.strings.deposit_to_bank}</EdgeText> : <CurrencyRow tokenId={destTokenId} wallet={destWallet} />}
       </Tile>
 
       {renderFeeTile}
