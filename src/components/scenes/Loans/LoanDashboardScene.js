@@ -85,14 +85,16 @@ export const LoanDashboardScene = (props: Props) => {
   // TODO: When new loan dApps are added, we will need a way to specify a way to select which dApp to add a new loan for.
   const handleAddLoan = useHandler(async () => {
     let newLoanWallet
-    const hardPluginWalletIds = Object.keys(wallets).filter(walletId => wallets[walletId].currencyInfo.pluginId === hardWalletPluginId)
+    const hardPluginWalletIds = Object.keys(wallets).filter(
+      walletId => wallets[walletId].currencyInfo.pluginId === hardWalletPluginId || wallets[walletId].currencyInfo.pluginId === 'ethereum'
+    )
 
-    if (hardPluginWalletIds.length > 1)
-      // Only show the wallet picker if the user owns more than one polygon wallet.
-      Airship.show(bridge => <WalletListModal bridge={bridge} headerTitle={s.strings.select_wallet} allowedAssets={[{ pluginId: hardWalletPluginId }]} />).then(
-        ({ walletId }) => {
-          if (walletId != null) {
-            newLoanWallet = wallets[walletId]
+    const { walletId: newLoanWalletId } = await Airship.show(bridge => (
+      <WalletListModal bridge={bridge} headerTitle={s.strings.select_wallet} allowedAssets={[{ pluginId: hardWalletPluginId }, { pluginId: 'ethereum' }]} />
+    ))
+
+    if (newLoanWalletId != null) newLoanWallet = wallets[newLoanWalletId]
+
           }
         }
       )
@@ -122,6 +124,8 @@ export const LoanDashboardScene = (props: Props) => {
           redText(err.message)
         })
         .finally(() => setIsNewLoanLoading(false))
+    } else {
+      console.log('fail')
     }
   })
 
