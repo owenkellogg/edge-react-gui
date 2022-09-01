@@ -37,17 +37,19 @@ console.log('***********************')
 global.clog = console.log
 
 // TODO: Remove isMounted from IGNORED_WARNINGS once we upgrade to RN 0.57
-const IGNORED_WARNINGS = ['slowlog', 'Setting a timer for a long period of time', 'Warning: isMounted(...) is deprecated']
+const IGNORED_WARNINGS = [
+  'Module RCTSplashScreen requires main queue setup since it overrides `constantsToExport`',
+  /Warning: \w+ has been renamed, and is not recommended for use. See [^\s]* for details./,
+  'slowlog',
+  'Setting a timer for a long period of time',
+  'Warning: isMounted(...) is deprecated'
+]
 // $FlowExpectedError
 console.ignoredYellowBox = IGNORED_WARNINGS
 
 // Ignore errors and warnings(used for device testing)
 if (ENV.DISABLE_WARNINGS) {
-  const ignoreWarns = [
-    "Module RCTSplashScreen requires main queue setup since it overrides `constantsToExport` but doesn't implement `requiresMainQueueSetup`. In a future release React Native will default to initializing all native modules on a background thread unless explicitly opted-out of.",
-    /Warning: \w+ has been renamed, and is not recommended for use. See [^\s]* for details./
-  ]
-  LogBox.ignoreLogs(ignoreWarns)
+  LogBox.ignoreLogs(IGNORED_WARNINGS)
 }
 
 global.OS = Platform.OS
@@ -63,16 +65,16 @@ if (!TextInput.defaultProps) {
 TextInput.defaultProps.allowFontScaling = false
 
 // $FlowFixMe
-if (__DEV__) {
+if (!__DEV__) {
   // TODO: Fix logger to append data vs read/modify/write
   // $FlowFixMe
   console.log = log
   // $FlowFixMe
   console.info = log
   // $FlowFixMe
-  // console.warn = log
+  console.warn = log
   // $FlowFixMe
-  // console.error = log
+  console.error = log
 }
 
 global.logActivity = logActivity
