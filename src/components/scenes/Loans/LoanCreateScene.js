@@ -3,15 +3,18 @@
 import { div, lt, mul } from 'biggystring'
 import { type EdgeCurrencyWallet } from 'edge-core-js'
 import * as React from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Ionicon from 'react-native-vector-icons/Ionicons'
 import { sprintf } from 'sprintf-js'
 
+import { AAVE_SUPPORT_ARTICLE_URL } from '../../../constants/aaveConstants'
 import { useRunningActionQueueId } from '../../../controllers/action-queue/ActionQueueStore'
 import { useAllTokens } from '../../../hooks/useAllTokens'
 import { formatFiatString } from '../../../hooks/useFiatText'
 import { useHandler } from '../../../hooks/useHandler'
 import { useTokenDisplayData } from '../../../hooks/useTokenDisplayData'
+import { useUrlHandler } from '../../../hooks/useUrlHandler'
 import { useWalletBalance } from '../../../hooks/useWalletBalance'
 import { useWalletName } from '../../../hooks/useWalletName'
 import { useWatch } from '../../../hooks/useWatch'
@@ -255,6 +258,8 @@ export const LoanCreateScene = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fiatCurrencyCode])
 
+  const handleInfoIconPress = useUrlHandler(AAVE_SUPPORT_ARTICLE_URL)
+
   // Warning
   const collateralWarningMsg = useMemo(
     () => sprintf(s.strings.loan_insufficient_funds_warning, srcAssetName, srcWalletName, srcCurrencyCode, config.appName),
@@ -302,7 +307,16 @@ export const LoanCreateScene = (props: Props) => {
 
   return (
     <SceneWrapper>
-      <SceneHeader underline title={s.strings.loan_create_title} />
+      <SceneHeader
+        underline
+        title={s.strings.loan_create_title}
+        withTopMargin
+        icon={
+          <TouchableOpacity onPress={handleInfoIconPress}>
+            <Ionicon name="information-circle-outline" size={theme.rem(1.25)} color={theme.iconTappable} />
+          </TouchableOpacity>
+        }
+      />
       <KeyboardAwareScrollView extraScrollHeight={theme.rem(2.75)} enableOnAndroid>
         <View style={styles.sceneContainer}>
           {/* Amount  to borrow */}

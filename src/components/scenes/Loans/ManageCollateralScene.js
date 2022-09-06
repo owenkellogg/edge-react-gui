@@ -3,8 +3,11 @@
 import { mul } from 'biggystring'
 import type { EdgeCurrencyWallet } from 'edge-core-js'
 import * as React from 'react'
+import { TouchableOpacity } from 'react-native'
+import Ionicon from 'react-native-vector-icons/Ionicons'
 import { sprintf } from 'sprintf-js'
 
+import { AAVE_SUPPORT_ARTICLE_URL } from '../../../constants/aaveConstants'
 import { getSpecialCurrencyInfo } from '../../../constants/WalletAndCurrencyConstants.js'
 import { makeActionProgram } from '../../../controllers/action-queue/ActionProgram'
 import { useRunningActionQueueId } from '../../../controllers/action-queue/ActionQueueStore'
@@ -12,6 +15,7 @@ import { runLoanActionProgram } from '../../../controllers/loan-manager/redux/ac
 import { type LoanAccount } from '../../../controllers/loan-manager/types'
 import { useAsyncEffect } from '../../../hooks/useAsyncEffect.js'
 import { useHandler } from '../../../hooks/useHandler.js'
+import { useUrlHandler } from '../../../hooks/useUrlHandler'
 import { useWatch } from '../../../hooks/useWatch.js'
 import s from '../../../locales/strings.js'
 import type { ApprovableAction } from '../../../plugins/borrow-plugins/types.js'
@@ -23,6 +27,7 @@ import { FlipInputTile } from '../../cards/FlipInputTile.js'
 import { CollateralAmountTile, DebtAmountTile, ExchangeRateTile, NetworkFeeTile } from '../../cards/LoanDebtsAndCollateralComponents.js'
 import { type WalletListResult, WalletListModal } from '../../modals/WalletListModal.js'
 import { Airship, showError } from '../../services/AirshipInstance'
+import { useTheme } from '../../services/ThemeContext'
 import { type ExchangedFlipInputAmounts } from '../../themed/ExchangedFlipInput.js'
 import { AprCard } from '../../tiles/AprCard.js'
 import { InterestRateChangeTile } from '../../tiles/InterestRateChangeTile.js'
@@ -81,6 +86,8 @@ export const ManageCollateralScene = <T: $Keys<ParamList>>(props: Props<T>) => {
     headerText,
     navigation
   } = props
+
+  const theme = useTheme()
 
   const { borrowEngine, borrowPlugin } = loanAccount
   const { currencyWallet: borrowEngineWallet } = loanAccount.borrowEngine
@@ -200,7 +207,7 @@ export const ManageCollateralScene = <T: $Keys<ParamList>>(props: Props<T>) => {
     })
   })
 
-  const onSliderComplete = async (resetSlider: () => void) => {
+  const handleSliderComplete = async (resetSlider: () => void) => {
     if (actionOp != null) {
       const actionProgram = await makeActionProgram(actionOp)
       try {
@@ -213,6 +220,8 @@ export const ManageCollateralScene = <T: $Keys<ParamList>>(props: Props<T>) => {
       }
     }
   }
+
+  const handleInfoIconPress = useUrlHandler(AAVE_SUPPORT_ARTICLE_URL)
 
   // Tiles
   const renderFlipInput = useMemo(() => {
@@ -279,21 +288,26 @@ export const ManageCollateralScene = <T: $Keys<ParamList>>(props: Props<T>) => {
     )
   }, [borrowEngine, amountChange, ltvType, selectedTokenId, actionNativeAmount])
 
-  const tiles = [
-    renderFlipInput,
-    renderExchangeRateTile,
-    renderNewAprCard,
-    renderTotalDebtTile,
-    renderNewDebtTile,
-    renderTotalCollateralTile,
-    renderFeeTile,
-    renderInterestRateChangeTile,
-    renderLTVRatioTile
-  ]
-
   return (
-    <FormScene headerText={headerText} onSliderComplete={onSliderComplete} sliderDisabled={approvalAction == null}>
-      {tiles}
+    <FormScene
+      headerText={headerText}
+      headerIcon={
+        <TouchableOpacity onPress={handleInfoIconPress}>
+          <Ionicon name="information-circle-outline" size={theme.rem(1.25)} color={theme.iconTappable} />
+        </TouchableOpacity>
+      }
+      onSliderComplete={handleSliderComplete}
+      sliderDisabled={approvalAction == null}
+    >
+      {renderFlipInput}
+      {renderExchangeRateTile}
+      {renderNewAprCard}
+      {renderTotalDebtTile}
+      {renderNewDebtTile}
+      {renderTotalCollateralTile}
+      {renderFeeTile}
+      {renderInterestRateChangeTile}
+      {renderLTVRatioTile}
     </FormScene>
   )
 }

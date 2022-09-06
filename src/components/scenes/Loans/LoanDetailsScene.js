@@ -9,12 +9,14 @@ import Ionicon from 'react-native-vector-icons/Ionicons'
 import { sprintf } from 'sprintf-js'
 
 import { Fontello } from '../../../assets/vector'
+import { AAVE_SUPPORT_ARTICLE_URL } from '../../../constants/aaveConstants'
 import { getSymbolFromCurrency } from '../../../constants/WalletAndCurrencyConstants'
 import { getActionProgramDisplayInfo } from '../../../controllers/action-queue/display'
 import { type ActionDisplayInfo } from '../../../controllers/action-queue/types'
 import { type LoanProgramEdge } from '../../../controllers/loan-manager/store'
 import { useAsyncEffect } from '../../../hooks/useAsyncEffect'
 import { formatFiatString } from '../../../hooks/useFiatText'
+import { useUrlHandler } from '../../../hooks/useUrlHandler'
 import { useWatch } from '../../../hooks/useWatch'
 import { toPercentString } from '../../../locales/intl'
 import s from '../../../locales/strings'
@@ -119,6 +121,9 @@ export const LoanDetailsScene = (props: Props) => {
     const statusScene = programEdge.programType === 'loan-create' ? 'loanCreateStatus' : 'loanDetailsStatus'
     navigation.navigate(statusScene, { actionQueueId: programEdge.programId })
   }
+
+  const handleInfoIconPress = useUrlHandler(AAVE_SUPPORT_ARTICLE_URL)
+
   const renderProgramStatusCard = () => {
     if (runningProgramMessage != null && runningProgramEdge != null) {
       return (
@@ -136,7 +141,16 @@ export const LoanDetailsScene = (props: Props) => {
 
   return (
     <SceneWrapper>
-      <SceneHeader underline title={s.strings.loan_details_title} style={styles.sceneHeader} />
+      <SceneHeader
+        underline
+        title={s.strings.loan_details_title}
+        withTopMargin
+        icon={
+          <TouchableOpacity onPress={handleInfoIconPress}>
+            <Ionicon name="information-circle-outline" size={theme.rem(1.25)} color={theme.iconTappable} />
+          </TouchableOpacity>
+        }
+      />
       <KeyboardAwareScrollView extraScrollHeight={theme.rem(2.75)} enableOnAndroid>
         <Space around>
           {renderProgramStatusCard()}
@@ -217,12 +231,6 @@ export const LoanDetailsScene = (props: Props) => {
 
 const getStyles = cacheStyles(theme => {
   return {
-    sceneHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: theme.rem(1)
-    },
     actionLabel: {
       fontFamily: theme.fontFaceMedium,
       alignSelf: 'center'

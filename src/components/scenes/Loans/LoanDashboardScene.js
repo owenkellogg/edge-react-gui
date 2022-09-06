@@ -4,8 +4,10 @@ import { FlatList, TouchableOpacity } from 'react-native'
 import Ionicon from 'react-native-vector-icons/Ionicons'
 
 import { createWallet } from '../../../actions/CreateWalletActions'
+import { AAVE_SUPPORT_ARTICLE_URL } from '../../../constants/aaveConstants'
 import { type LoanAccount } from '../../../controllers/loan-manager/types'
 import { useHandler } from '../../../hooks/useHandler'
+import { useUrlHandler } from '../../../hooks/useUrlHandler'
 import { useWatch } from '../../../hooks/useWatch'
 import s from '../../../locales/strings'
 import { borrowPlugins } from '../../../plugins/helpers/borrowPluginHelpers'
@@ -94,6 +96,7 @@ export const LoanDashboardScene = (props: Props) => {
         .finally(() => setIsNewLoanLoading(false))
     }
   })
+  const handleInfoIconPress = useUrlHandler(AAVE_SUPPORT_ARTICLE_URL)
 
   const renderLoanCard = useHandler((item: FlatListItem<LoanAccount>) => {
     const loanAccount: LoanAccount = item.item
@@ -133,7 +136,16 @@ export const LoanDashboardScene = (props: Props) => {
 
   return (
     <SceneWrapper background="theme" hasTabs={false}>
-      <SceneHeader underline title={s.strings.loan_dashboard_title} />
+      <SceneHeader
+        underline
+        title={s.strings.loan_dashboard_title}
+        withTopMargin
+        icon={
+          <TouchableOpacity onPress={handleInfoIconPress}>
+            <Ionicon name="information-circle-outline" size={theme.rem(1.25)} color={theme.iconTappable} />
+          </TouchableOpacity>
+        }
+      />
       <EdgeText style={styles.textSectionHeader}>{s.strings.loan_active_loans_title}</EdgeText>
       <FlatList
         data={Object.values(loanAccounts)}
