@@ -12,6 +12,7 @@ import { SceneHeader } from '../themed/SceneHeader'
 
 type OwnProps = {
   headerText: string,
+  headerIcon?: React.Node,
   children?: React.Node,
   onSliderComplete: (reset: () => void) => Promise<void>,
   sliderDisabled: boolean
@@ -20,11 +21,11 @@ type OwnProps = {
 type Props = OwnProps
 
 export const FormScene = (props: Props) => {
-  const { headerText, children, onSliderComplete, sliderDisabled } = props
+  const { headerText, headerIcon, children, onSliderComplete, sliderDisabled } = props
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const sceneHeader = useMemo(() => <SceneHeader style={styles.sceneHeader} title={headerText} underline />, [headerText, styles.sceneHeader])
+  const sceneHeader = useMemo(() => <SceneHeader withTopMargin icon={headerIcon} title={headerText} underline />, [headerText, headerIcon])
 
   return (
     <SceneWrapper background="theme">
