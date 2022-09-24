@@ -234,6 +234,10 @@ export type Theme = {
   sliderTabRequest: string
   sliderTabMore: string
 
+  // Shimmer
+  shimmerBackgroundColor: string
+  shimmerBackgroundHighlight: string
+
   // pinOutline: string,
   // pinFilled: string,
 
