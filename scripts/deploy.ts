@@ -240,7 +240,7 @@ function buildAndroid(buildObj: BuildObj) {
 
   // Reset gradle file back
   // call('git reset --hard origin/' + buildObj.repoBranch)
-  buildObj.ipaFile = buildObj.guiPlatformDir + '/app/build/outputs/apk/release/app-release.apk'
+  buildObj.ipaFile = buildObj.guiPlatformDir + '/app/build/outputs/bundle/release/app-release.aab'
 }
 
 function buildCommonPost(buildObj: BuildObj) {
