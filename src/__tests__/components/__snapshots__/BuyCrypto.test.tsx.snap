@@ -55,17 +55,20 @@ exports[`BuyCrypto should render with some props 1`] = `
         "flex": 1,
         "justifyContent": "center",
         "marginVertical": 11,
+        "paddingHorizontal": 22,
       }
     }
   >
     <WithTheme(EdgeTextComponent)
       style={
         Object {
-          "fontSize": 28,
+          "color": "#A4C7DF",
+          "fontFamily": "Quicksand-Medium",
+          "textAlign": "center",
         }
       }
     >
-      No transactions yet!
+      No transactions yet.
     </WithTheme(EdgeTextComponent)>
   </View>
 </React.Fragment>

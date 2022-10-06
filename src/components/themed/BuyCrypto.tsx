@@ -3,7 +3,7 @@ import * as React from 'react'
 import { View } from 'react-native'
 import { sprintf } from 'sprintf-js'
 
-import { SPECIAL_CURRENCY_INFO } from '../../constants/WalletAndCurrencyConstants'
+import { getSpecialCurrencyInfo, SPECIAL_CURRENCY_INFO } from '../../constants/WalletAndCurrencyConstants'
 import { useHandler } from '../../hooks/useHandler'
 import s from '../../locales/strings'
 import { Actions } from '../../types/routerTypes'
@@ -26,11 +26,27 @@ export const BuyCrypto = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
 
+  const { displayName, pluginId } = wallet.currencyInfo
+  const { isNotTransactionListSupported } = getSpecialCurrencyInfo(wallet.type)
+
+  //
+  // Handlers
+  //
+
   const handlePress = useHandler(() => {
     Actions.push('pluginListBuy', { direction: 'buy' })
   })
 
-  const { displayName, pluginId } = wallet.currencyInfo
+  //
+  // Render
+  //
+
+  if (isNotTransactionListSupported)
+    return (
+      <View style={styles.noTransactionContainer}>
+        <EdgeText style={styles.noTransactionText}>{s.strings.transaction_list_no_tx_support_yet}</EdgeText>
+      </View>
+    )
 
   return (
     <>
@@ -73,9 +89,12 @@ const getStyles = cacheStyles((theme: Theme) => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: theme.rem(0.5)
+    marginVertical: theme.rem(0.5),
+    paddingHorizontal: theme.rem(1)
   },
   noTransactionText: {
-    fontSize: theme.rem(1.25)
+    fontFamily: theme.fontFaceMedium,
+    color: theme.secondaryText,
+    textAlign: 'center'
   }
 }))
