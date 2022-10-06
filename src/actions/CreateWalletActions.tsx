@@ -7,6 +7,7 @@ import { sprintf } from 'sprintf-js'
 import { ButtonsModal } from '../components/modals/ButtonsModal'
 import { AccountPaymentParams } from '../components/scenes/CreateWalletAccountSelectScene'
 import { Airship, showError } from '../components/services/AirshipInstance'
+import { WalletCreateItem } from '../components/themed/WalletList'
 import { getPluginId } from '../constants/WalletAndCurrencyConstants'
 import s from '../locales/strings'
 import { getExchangeDenomination } from '../selectors/DenominationSelectors'
@@ -203,3 +204,67 @@ export const createHandleUnavailableModal = (newWalletId: string, accountName: s
   ))
   Actions.pop()
 }
+
+type MainWalletCreateItem = WalletCreateItem & { walletType: string }
+type TokenWalletCreateItem = WalletCreateItem & { tokenId: string; createWalletIds: string[] }
+
+export const splitCreateWalletItems = (createItems: WalletCreateItem[]): { newWalletItems: MainWalletCreateItem[]; newTokenItems: TokenWalletCreateItem[] } => {
+  const newWalletItems: MainWalletCreateItem[] = []
+  const newTokenItems: TokenWalletCreateItem[] = []
+  createItems.forEach(item => {
+    if (item.walletType != null) {
+      newWalletItems.push(item as MainWalletCreateItem)
+    } else if (item.tokenId != null) {
+      if (item.createWalletIds == null) item.createWalletIds = []
+      newTokenItems.push(item as TokenWalletCreateItem)
+    }
+  })
+  return { newWalletItems, newTokenItems }
+}
+
+export const PLACEHOLDER_WALLET_ID = 'NEW_WALLET_UNIQUE_STRING'
+
+export const createNewWalletsAndTokens =
+  (createItems: WalletCreateItem[], walletNames: { [key: string]: string }, fiatCode: string, importText?: string) =>
+  async (dispatch: Dispatch, getState: GetState) => {
+    const state = getState()
+    const { currencyWallets } = state.core.account
+
+    const { newWalletItems, newTokenItems } = splitCreateWalletItems(createItems)
+
+    // Create new wallets first and then enable the new tokens
+    const newWalletPromises = newWalletItems.map(async item => {
+      const { key, walletType } = item
+      const walletName = walletNames[key]
+
+      const wallet = await dispatch(createCurrencyWallet(walletName, walletType, `iso:${fiatCode}`, importText))
+      currencyWallets[wallet.id] = wallet
+      return wallet
+    })
+
+    const newWallets = await Promise.all(newWalletPromises)
+
+    const walletIdTokenMap = newTokenItems.reduce((map: { [walletId: string]: string[] }, item) => {
+      const { createWalletIds, pluginId, tokenId } = item
+      if (tokenId == null) return map
+
+      let walletId = createWalletIds[0]
+
+      if (walletId === PLACEHOLDER_WALLET_ID) {
+        const newWallet = newWallets.find(wallet => wallet.currencyInfo.pluginId === pluginId)
+        if (newWallet == null) return map
+        walletId = newWallet.id
+      }
+
+      if (map[walletId] == null) map[walletId] = []
+      map[walletId].push(tokenId)
+      return map
+    }, {})
+
+    const newTokenPromises = Object.keys(walletIdTokenMap).map(async walletId => {
+      const wallet = currencyWallets[walletId]
+      return await wallet.changeEnabledTokenIds([...wallet.enabledTokenIds, ...walletIdTokenMap[walletId]])
+    })
+
+    await Promise.all(newTokenPromises)
+  }
