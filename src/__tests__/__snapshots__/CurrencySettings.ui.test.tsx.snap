@@ -4,8 +4,8 @@ exports[`CurrencySettings should render 1`] = `
 <BVLinearGradient
   colors={
     Array [
-      4279050565,
-      4278994026,
+      4279376206,
+      4279376206,
     ]
   }
   endPoint={
@@ -52,11 +52,29 @@ exports[`CurrencySettings should render 1`] = `
   >
     <RCTScrollView>
       <View>
-        <View
+        <BVLinearGradient
+          colors={
+            Array [
+              4278980916,
+              4279705956,
+            ]
+          }
+          endPoint={
+            Object {
+              "x": 1,
+              "y": 1,
+            }
+          }
+          locations={null}
+          startPoint={
+            Object {
+              "x": 0,
+              "y": 0,
+            }
+          }
           style={
             Object {
               "alignItems": "center",
-              "backgroundColor": "#0D2145",
               "flexDirection": "row",
               "justifyContent": "flex-start",
               "minHeight": 62,
@@ -78,7 +96,7 @@ exports[`CurrencySettings should render 1`] = `
           >
             Denominations
           </Text>
-        </View>
+        </BVLinearGradient>
         <View
           accessible={true}
           focusable={true}

@@ -58,7 +58,7 @@ exports[`CreateWalletReviewComponent should render with loading props 1`] = `
         ]
       }
       onPress={[Function]}
-      type="secondary"
+      type="primary"
     />
   </View>
 </SceneWrapper>

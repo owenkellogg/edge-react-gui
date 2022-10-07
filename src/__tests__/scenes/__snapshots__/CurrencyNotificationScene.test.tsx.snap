@@ -4,8 +4,8 @@ exports[`CurrencyNotificationComponent should render with loading props 1`] = `
 <BVLinearGradient
   colors={
     Array [
-      4279050565,
-      4278994026,
+      4279376206,
+      4279376206,
     ]
   }
   endPoint={

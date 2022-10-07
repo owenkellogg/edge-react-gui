@@ -4,8 +4,8 @@ exports[`MyComponent should render Locked SettingsOverview 1`] = `
 <BVLinearGradient
   colors={
     Array [
-      4279050565,
-      4278994026,
+      4279376206,
+      4279376206,
     ]
   }
   endPoint={
@@ -52,11 +52,29 @@ exports[`MyComponent should render Locked SettingsOverview 1`] = `
   >
     <RCTScrollView>
       <View>
-        <View
+        <BVLinearGradient
+          colors={
+            Array [
+              4278980916,
+              4279705956,
+            ]
+          }
+          endPoint={
+            Object {
+              "x": 1,
+              "y": 1,
+            }
+          }
+          locations={null}
+          startPoint={
+            Object {
+              "x": 0,
+              "y": 0,
+            }
+          }
           style={
             Object {
               "alignItems": "center",
-              "backgroundColor": "#0D2145",
               "flexDirection": "row",
               "justifyContent": "flex-start",
               "minHeight": 62,
@@ -106,7 +124,7 @@ exports[`MyComponent should render Locked SettingsOverview 1`] = `
           >
             Account: some user
           </Text>
-        </View>
+        </BVLinearGradient>
         <View
           accessible={true}
           focusable={true}
@@ -514,11 +532,29 @@ exports[`MyComponent should render Locked SettingsOverview 1`] = `
             </Text>
           </View>
         </View>
-        <View
+        <BVLinearGradient
+          colors={
+            Array [
+              4278980916,
+              4279705956,
+            ]
+          }
+          endPoint={
+            Object {
+              "x": 1,
+              "y": 1,
+            }
+          }
+          locations={null}
+          startPoint={
+            Object {
+              "x": 0,
+              "y": 0,
+            }
+          }
           style={
             Object {
               "alignItems": "center",
-              "backgroundColor": "#0D2145",
               "flexDirection": "row",
               "justifyContent": "flex-start",
               "minHeight": 62,
@@ -568,7 +604,7 @@ exports[`MyComponent should render Locked SettingsOverview 1`] = `
           >
             Options
           </Text>
-        </View>
+        </BVLinearGradient>
         <View
           accessible={true}
           focusable={true}
@@ -1430,8 +1466,8 @@ exports[`MyComponent should render UnLocked SettingsOverview 1`] = `
 <BVLinearGradient
   colors={
     Array [
-      4279050565,
-      4278994026,
+      4279376206,
+      4279376206,
     ]
   }
   endPoint={
@@ -1478,11 +1514,29 @@ exports[`MyComponent should render UnLocked SettingsOverview 1`] = `
   >
     <RCTScrollView>
       <View>
-        <View
+        <BVLinearGradient
+          colors={
+            Array [
+              4278980916,
+              4279705956,
+            ]
+          }
+          endPoint={
+            Object {
+              "x": 1,
+              "y": 1,
+            }
+          }
+          locations={null}
+          startPoint={
+            Object {
+              "x": 0,
+              "y": 0,
+            }
+          }
           style={
             Object {
               "alignItems": "center",
-              "backgroundColor": "#0D2145",
               "flexDirection": "row",
               "justifyContent": "flex-start",
               "minHeight": 62,
@@ -1532,7 +1586,7 @@ exports[`MyComponent should render UnLocked SettingsOverview 1`] = `
           >
             Account: some user
           </Text>
-        </View>
+        </BVLinearGradient>
         <View
           accessible={true}
           focusable={true}
@@ -1940,11 +1994,29 @@ exports[`MyComponent should render UnLocked SettingsOverview 1`] = `
             </Text>
           </View>
         </View>
-        <View
+        <BVLinearGradient
+          colors={
+            Array [
+              4278980916,
+              4279705956,
+            ]
+          }
+          endPoint={
+            Object {
+              "x": 1,
+              "y": 1,
+            }
+          }
+          locations={null}
+          startPoint={
+            Object {
+              "x": 0,
+              "y": 0,
+            }
+          }
           style={
             Object {
               "alignItems": "center",
-              "backgroundColor": "#0D2145",
               "flexDirection": "row",
               "justifyContent": "flex-start",
               "minHeight": 62,
@@ -1994,7 +2066,7 @@ exports[`MyComponent should render UnLocked SettingsOverview 1`] = `
           >
             Options
           </Text>
-        </View>
+        </BVLinearGradient>
         <View
           accessible={true}
           focusable={true}

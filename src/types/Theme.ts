@@ -118,7 +118,10 @@ export type Theme = {
   // Settings Row
   settingsRowBackground: string
   settingsRowPressed: string
-  settingsRowHeaderBackground: string
+  settingsRowHeaderBackground: string[]
+  settingsRowHeaderBackgroundStart: GradientCoords
+  settingsRowHeaderBackgroundEnd: GradientCoords
+
   settingsRowHeaderFont: string
   settingsRowHeaderFontSizeRem: number
   settingsRowSubHeader: string
