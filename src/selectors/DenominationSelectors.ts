@@ -2,7 +2,7 @@ import { EdgeCurrencyInfo, EdgeDenomination } from 'edge-core-js'
 
 import { Dispatch, GetState, RootState } from '../types/reduxTypes'
 
-const emptyEdgeDenomination: EdgeDenomination = {
+export const emptyEdgeDenomination: EdgeDenomination = {
   name: '',
   multiplier: '1',
   symbol: ''
