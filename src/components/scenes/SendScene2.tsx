@@ -12,6 +12,8 @@ import { useSelector } from '../../types/reactRedux'
 import { RouteProp } from '../../types/routerTypes'
 import { GuiExchangeRates } from '../../types/types'
 import { SceneWrapper } from '../common/SceneWrapper'
+import { FlipInputModal, FlipInputModalResult } from '../modals/FlipInputModal'
+import { Airship } from '../services/AirshipInstance'
 import { useTheme } from '../services/ThemeContext'
 import { AddressTile, ChangeAddressResult } from '../tiles/AddressTile'
 import { EditableAmountTile } from '../tiles/EditableAmountTile'
@@ -77,6 +79,12 @@ const SendComponent = (props: Props) => {
     return null
   })
 
+  const handleFlipInputModal = useHandler(() => {
+    Airship.show<FlipInputModalResult>(bridge => (
+      <FlipInputModal bridge={bridge} onFeesChange={() => undefined} walletId={walletId} currencyCode={currencyCode} />
+    )).catch(error => console.log(error))
+  })
+
   const renderAmount = useHandler((spendTarget: EdgeSpendTarget) => {
     const { publicAddress, nativeAmount } = spendTarget
     if (publicAddress != null && !hiddenTilesMap.amount) {
@@ -91,7 +99,7 @@ const SendComponent = (props: Props) => {
           displayDenomination={cryptoDisplayDenomination}
           lockInputs={lockTilesMap.amount ?? false}
           // TODO: Handle press
-          onPress={() => {}}
+          onPress={handleFlipInputModal}
         />
       )
     }
