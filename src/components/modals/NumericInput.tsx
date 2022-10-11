@@ -7,13 +7,12 @@ import { formatNumberInput, formatToNativeNumber, isValidInput } from '../../loc
 import { useState } from '../../types/reactHooks'
 
 type Props = {
-  ref: React.RefObject<TextInput>
   minDecimals?: number
   maxDecimals?: number
 } & TextInputProps
 
 export const NumericInput = React.forwardRef<TextInput, Props>((props: Props, ref) => {
-  const { onChangeText, minDecimals, maxDecimals, value, ref: _, ...rest } = props
+  const { onChangeText, minDecimals, maxDecimals, value, ...rest } = props
   const [innerValue, setInnerValue] = useState<string>(props.value ?? '')
   const propValue = useRef(props.value ?? '')
 
