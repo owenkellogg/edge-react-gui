@@ -62,24 +62,10 @@ export type ParamList = {
     selectedFiat: GuiFiatType
     selectedWalletType: CreateWalletType
   }
-  createWalletChoice: {
-    selectedWalletType: CreateWalletType
-  }
   createWalletImport: {
     createWalletList: WalletCreateItem[]
     walletNames: { [key: string]: string }
     fiatCode: string
-  }
-  createWalletName: {
-    cleanedPrivateKey?: string
-    selectedFiat: GuiFiatType
-    selectedWalletType: CreateWalletType
-  }
-  createWalletReview: {
-    cleanedPrivateKey?: string // for creating wallet from import private key
-    selectedFiat: GuiFiatType
-    selectedWalletType: CreateWalletType
-    walletName: string
   }
   createWalletSelectCrypto: {}
   createWalletSelectFiat: {

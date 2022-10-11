@@ -6,9 +6,7 @@ import { registerDevice } from '../actions/DeviceIdActions'
 import { logoutRequest } from '../actions/LoginActions'
 import { checkAndShowGetCryptoModal } from '../actions/ScanActions'
 import { showReEnableOtpModal } from '../actions/SettingsActions'
-import { CreateWalletChoiceScene } from '../components/scenes/CreateWalletChoiceScene'
 import { CreateWalletImportScene } from '../components/scenes/CreateWalletImportScene'
-import { CreateWalletReviewScene } from '../components/scenes/CreateWalletReviewScene'
 import { CreateWalletSelectCryptoScene } from '../components/scenes/CreateWalletSelectCryptoScene'
 import { CryptoExchangeQuote } from '../components/scenes/CryptoExchangeQuoteScene'
 import { CryptoExchangeScene } from '../components/scenes/CryptoExchangeScene'
@@ -55,7 +53,6 @@ import { ChangePasswordScene } from './scenes/ChangePasswordScene'
 import { ChangePinScene } from './scenes/ChangePinScene'
 import { CreateWalletAccountSelectScene } from './scenes/CreateWalletAccountSelectScene'
 import { CreateWalletAccountSetupScene } from './scenes/CreateWalletAccountSetupScene'
-import { CreateWalletName } from './scenes/CreateWalletNameScene'
 import { CreateWalletSelectFiatScene } from './scenes/CreateWalletSelectFiatScene'
 import { CryptoExchangeQuoteProcessingScreen } from './scenes/CryptoExchangeQuoteProcessingScene'
 import { CurrencyNotificationScene } from './scenes/CurrencyNotificationScene'
@@ -216,16 +213,6 @@ export class MainComponent extends React.Component<Props> {
               />
 
               <Scene
-                key="createWalletChoice"
-                component={withNavigation(ifLoggedIn(CreateWalletChoiceScene))}
-                navTransparent
-                // @ts-expect-error
-                renderLeftButton={<BackButton onPress={this.handleBack} />}
-                // @ts-expect-error
-                renderRightButton={this.renderEmptyButton()}
-              />
-
-              <Scene
                 key="createWalletImport"
                 component={withNavigation(ifLoggedIn(CreateWalletImportScene))}
                 navTransparent
@@ -246,28 +233,8 @@ export class MainComponent extends React.Component<Props> {
               />
 
               <Scene
-                key="createWalletName"
-                component={withNavigation(ifLoggedIn(CreateWalletName))}
-                navTransparent
-                // @ts-expect-error
-                renderLeftButton={<BackButton onPress={this.handleBack} />}
-                // @ts-expect-error
-                renderRightButton={this.renderEmptyButton()}
-              />
-
-              <Scene
                 key="createWalletSelectFiat"
                 component={withNavigation(ifLoggedIn(CreateWalletSelectFiatScene))}
-                navTransparent
-                // @ts-expect-error
-                renderLeftButton={<BackButton onPress={this.handleBack} />}
-                // @ts-expect-error
-                renderRightButton={this.renderEmptyButton()}
-              />
-
-              <Scene
-                key="createWalletReview"
-                component={withNavigation(ifLoggedIn(CreateWalletReviewScene))}
                 navTransparent
                 // @ts-expect-error
                 renderLeftButton={<BackButton onPress={this.handleBack} />}
