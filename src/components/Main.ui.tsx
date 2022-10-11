@@ -10,7 +10,6 @@ import { CreateWalletChoiceScene } from '../components/scenes/CreateWalletChoice
 import { CreateWalletImportScene } from '../components/scenes/CreateWalletImportScene'
 import { CreateWalletReviewScene } from '../components/scenes/CreateWalletReviewScene'
 import { CreateWalletSelectCryptoScene } from '../components/scenes/CreateWalletSelectCryptoScene'
-import { CreateWalletSelectFiatScene } from '../components/scenes/CreateWalletSelectFiatScene'
 import { CryptoExchangeQuote } from '../components/scenes/CryptoExchangeQuoteScene'
 import { CryptoExchangeScene } from '../components/scenes/CryptoExchangeScene'
 import { CryptoExchangeSuccessScene } from '../components/scenes/CryptoExchangeSuccessScene'
@@ -57,6 +56,7 @@ import { ChangePinScene } from './scenes/ChangePinScene'
 import { CreateWalletAccountSelectScene } from './scenes/CreateWalletAccountSelectScene'
 import { CreateWalletAccountSetupScene } from './scenes/CreateWalletAccountSetupScene'
 import { CreateWalletName } from './scenes/CreateWalletNameScene'
+import { CreateWalletSelectFiatScene } from './scenes/CreateWalletSelectFiatScene'
 import { CryptoExchangeQuoteProcessingScreen } from './scenes/CryptoExchangeQuoteProcessingScene'
 import { CurrencyNotificationScene } from './scenes/CurrencyNotificationScene'
 import { EdgeLoginScene } from './scenes/EdgeLoginScene'
@@ -229,8 +229,6 @@ export class MainComponent extends React.Component<Props> {
                 key="createWalletImport"
                 component={withNavigation(ifLoggedIn(CreateWalletImportScene))}
                 navTransparent
-                // @ts-expect-error
-                renderTitle={<HeaderTitle title={s.strings.create_wallet_import_title} />}
                 // @ts-expect-error
                 renderLeftButton={<BackButton onPress={this.handleBack} />}
                 // @ts-expect-error

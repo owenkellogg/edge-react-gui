@@ -205,7 +205,7 @@ export const createHandleUnavailableModal = (newWalletId: string, accountName: s
   Actions.pop()
 }
 
-type MainWalletCreateItem = WalletCreateItem & { walletType: string }
+export type MainWalletCreateItem = WalletCreateItem & { walletType: string }
 type TokenWalletCreateItem = WalletCreateItem & { tokenId: string; createWalletIds: string[] }
 
 export const splitCreateWalletItems = (createItems: WalletCreateItem[]): { newWalletItems: MainWalletCreateItem[]; newTokenItems: TokenWalletCreateItem[] } => {
@@ -229,31 +229,32 @@ export const createNewWalletsAndTokens =
   async (dispatch: Dispatch, getState: GetState) => {
     const state = getState()
     const { currencyWallets } = state.core.account
-
     const { newWalletItems, newTokenItems } = splitCreateWalletItems(createItems)
 
     // Create new wallets first and then enable the new tokens
-    const newWalletPromises = newWalletItems.map(async item => {
+    const newWallets: { [walletId: string]: EdgeCurrencyWallet } = {}
+    for (const item of newWalletItems) {
       const { key, walletType } = item
       const walletName = walletNames[key]
+      try {
+        const wallet = await dispatch(createCurrencyWallet(walletName, walletType, `iso:${fiatCode}`, importText))
+        newWallets[wallet.id] = wallet
+      } catch (e) {
+        showError(e)
+      }
+    }
 
-      const wallet = await dispatch(createCurrencyWallet(walletName, walletType, `iso:${fiatCode}`, importText))
-      currencyWallets[wallet.id] = wallet
-      return wallet
-    })
-
-    const newWallets = await Promise.all(newWalletPromises)
+    const allCurrencyWallets = { ...currencyWallets, ...newWallets }
 
     const walletIdTokenMap = newTokenItems.reduce((map: { [walletId: string]: string[] }, item) => {
       const { createWalletIds, pluginId, tokenId } = item
       if (tokenId == null) return map
 
       let walletId = createWalletIds[0]
-
       if (walletId === PLACEHOLDER_WALLET_ID) {
-        const newWallet = newWallets.find(wallet => wallet.currencyInfo.pluginId === pluginId)
-        if (newWallet == null) return map
-        walletId = newWallet.id
+        const newWalletId = Object.keys(newWallets).find(walletId => allCurrencyWallets[walletId]?.currencyInfo.pluginId === pluginId)
+        if (newWalletId == null) return map
+        walletId = newWalletId
       }
 
       if (map[walletId] == null) map[walletId] = []
@@ -262,9 +263,8 @@ export const createNewWalletsAndTokens =
     }, {})
 
     const newTokenPromises = Object.keys(walletIdTokenMap).map(async walletId => {
-      const wallet = currencyWallets[walletId]
+      const wallet = allCurrencyWallets[walletId]
       return await wallet.changeEnabledTokenIds([...wallet.enabledTokenIds, ...walletIdTokenMap[walletId]])
     })
-
     await Promise.all(newTokenPromises)
   }

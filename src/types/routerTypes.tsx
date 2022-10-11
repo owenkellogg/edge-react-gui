@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as Flux from 'react-native-router-flux'
 
 import { ExchangedFlipInputAmounts } from '../components/themed/ExchangedFlipInput'
+import { WalletCreateItem } from '../components/themed/WalletList'
 import { PaymentMethod } from '../controllers/action-queue/WyreClient'
 import { BorrowEngine, BorrowPlugin } from '../plugins/borrow-plugins/types'
 import { FiatPluginEnterAmountResponse, FiatPluginGetMethodsResponse } from '../plugins/gui/fiatPluginTypes'
@@ -65,7 +66,9 @@ export type ParamList = {
     selectedWalletType: CreateWalletType
   }
   createWalletImport: {
-    selectedWalletType: CreateWalletType
+    createWalletList: WalletCreateItem[]
+    walletNames: { [key: string]: string }
+    fiatCode: string
   }
   createWalletName: {
     cleanedPrivateKey?: string
@@ -80,8 +83,7 @@ export type ParamList = {
   }
   createWalletSelectCrypto: {}
   createWalletSelectFiat: {
-    selectedWalletType: CreateWalletType
-    cleanedPrivateKey?: string
+    createWalletList: WalletCreateItem[]
   }
   currencyNotificationSettings: {
     currencyInfo: EdgeCurrencyInfo
