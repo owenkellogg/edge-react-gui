@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { useRef } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import { TextInput, TextInputProps } from 'react-native'
 
 import { useHandler } from '../../hooks/useHandler'
@@ -11,10 +10,15 @@ type Props = {
   maxDecimals?: number
 } & TextInputProps
 
-export const NumericInput = React.forwardRef<TextInput, Props>((props: Props, ref) => {
+export const NumericInput = forwardRef<TextInput, Props>((props: Props, ref) => {
   const { onChangeText, minDecimals, maxDecimals, value, ...rest } = props
   const [innerValue, setInnerValue] = useState<string>(props.value ?? '')
-  const propValue = useRef(props.value ?? '')
+
+  useEffect(() => {
+    const propVal = props.value ?? ''
+    const displayNum = propVal === '' ? '' : formatNumberInput(propVal, { minDecimals, maxDecimals })
+    setInnerValue(displayNum)
+  }, [props.value])
 
   const onChangeTextInner = useHandler(text => {
     if (isValidInput(text)) {
@@ -26,12 +30,6 @@ export const NumericInput = React.forwardRef<TextInput, Props>((props: Props, re
       }
     }
   })
-
-  if (props.value !== propValue.current) {
-    propValue.current = props.value ?? ''
-    const displayNum = props.value === '' ? '' : formatNumberInput(propValue.current, { minDecimals, maxDecimals })
-    setInnerValue(displayNum)
-  }
 
   return <TextInput ref={ref} onChangeText={onChangeTextInner} keyboardType="decimal-pad" value={innerValue} {...rest} />
 })
