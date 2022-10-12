@@ -93,8 +93,9 @@ export const updateLoanAccount = (loanAccount: LoanAccount) => async (dispatch: 
   const store = makeCleanStore(account, LOAN_MANAGER_STORE_ID)
   const loanAccountMapRecord = await store.initRecord(LOAN_ACCOUNT_MAP, asLoanAccountMapRecord)
 
+  // Create loan if it doesn't exist
   if (loanAccountMapRecord.data[loanAccount.id] == null) {
-    dispatch(await updateLoanAccount(loanAccount))
+    dispatch(await createLoanAccount(loanAccount))
     return
   }
 
