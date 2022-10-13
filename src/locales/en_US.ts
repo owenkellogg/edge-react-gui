@@ -243,7 +243,7 @@ const strings = {
   create_wallet_account_amount_due: 'Amount due:',
   create_wallet_account_error_sending_transaction: 'Error sending transaction',
   create_wallet_account_payment_sent_title: 'Payment Sent',
-  create_wallet_account_payment_sent_message: 'Activation payment sent. Please wait for a confirmation on your transaction before using your new wallet.',
+  create_wallet_account_payment_sent_message: 'Activation payment sent. Please wait for a 38confirmation on your transaction before using your new wallet.',
   create_wallet_account_handle_unavailable_modal_title: 'Account Handle Unavailable',
   create_wallet_account_handle_unavailable_modal_message: 'Your chosen account handle, %s, is unavailable now. Please use a different one to continue.',
   create_wallet_account_metadata_name: '%s Network',
@@ -935,9 +935,9 @@ const strings = {
   loan_borrow_more: 'Borrow More',
   loan_breakdown_title: 'Loan Breakdown',
   loan_close_loan_warning:
-    "Closing your loan will liquidate some of the collateral to pay of the remaining principle and interest of your loan. The remaining collateral will be deposited back to your wallet.\n\nLiquidation most likely will incur a higer capital cost, if remaining principle isn't repaid.",
+    "Closing your loan will liquidate some of the collateral to pay of the remaining principal and interest of your loan. The remaining collateral will be deposited back to your wallet.\n\nLiquidation most likely will incur a higer capital cost, if remaining principal isn't repaid.",
   loan_close_loan_no_tx_needed_message:
-    `There appears to be no principle to repay nor collateral to withdraw.\n\n` +
+    `There appears to be no principal to repay nor collateral to withdraw.\n\n` +
     `No transactions are required to close your account, however the account may re-appear after closing if there are pending on-chain transactions.`,
   loan_close_loan_title: 'Close Loan',
   loan_close_loan_error:
