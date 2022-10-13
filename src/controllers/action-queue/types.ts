@@ -1,5 +1,3 @@
-/* eslint-disable no-use-before-define */
-
 import { EdgeAccount, EdgeNetworkFee, EdgeTransaction } from 'edge-core-js'
 
 //
@@ -64,6 +62,7 @@ export type LoanRepayActionOp = {
   nativeAmount: string
   walletId: string
   tokenId?: string
+  fromTokenId?: string
 }
 export type LoanWithdrawActionOp = {
   type: 'loan-withdraw'
@@ -117,6 +116,7 @@ export type AddressBalanceEffect = {
 export type PushEventEffect = {
   type: 'push-event'
   eventId: string
+  effect?: ActionEffect
 }
 export type PriceLevelEffect = {
   type: 'price-level'
@@ -176,8 +176,13 @@ export type BroadcastTx = {
   networkFee: EdgeNetworkFee
   tx: EdgeTransaction
 }
+export type EffectCheckResult = {
+  delay: number
+  isEffective: boolean
+  updatedEffect?: ActionEffect
+}
 export type ExecutableAction = {
-  dryrun: (pendingTxMap: PendingTxMap) => Promise<ExecutionOutput | null>
+  dryrun: (pendingTxMap: Readonly<PendingTxMap>) => Promise<ExecutionOutput | null>
   execute: () => Promise<ExecutionOutput>
 }
 export type ExecutionContext = {
@@ -192,11 +197,11 @@ export type ExecutionResults = {
   nextState: ActionProgramState
 }
 export type PendingTxMap = {
-  [walletId: string]: EdgeTransaction[]
+  [walletId: string]: EdgeTransaction[] | undefined
 }
 
 //
-// Aciton Display API
+// Action Display API
 //
 
 export type ActionDisplayStatus = 'pending' | 'active' | 'done' | Error

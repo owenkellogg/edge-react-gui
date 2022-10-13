@@ -68,8 +68,7 @@ export function TransactionListRow(props: Props) {
   }, [])
 
   // Thumbnail
-  // @ts-expect-error
-  let thumbnailPath
+  let thumbnailPath: string | undefined
   const contacts: GuiContact[] = useSelector(state => state.contacts) ?? []
   const transactionContactName = name != null ? normalizeForSearch(name) : null
   for (const contact of contacts) {
@@ -94,6 +93,7 @@ export function TransactionListRow(props: Props) {
     maxConversionDecimals = maxPrimaryCurrencyConversionDecimals(log10(displayDenomination.multiplier), precisionAdjustValue)
   }
   const cryptoAmount = div(abs(transaction.nativeAmount ?? '0'), displayDenomination.multiplier, DECIMAL_PRECISION)
+  const cryptoExchangeAmount = div(abs(transaction.nativeAmount ?? '0'), exchangeDenomination.multiplier, DECIMAL_PRECISION)
   const cryptoAmountFormat = formatNumber(decimalOrZero(truncateDecimals(cryptoAmount, maxConversionDecimals), maxConversionDecimals))
 
   // Fiat Amount
@@ -101,7 +101,7 @@ export function TransactionListRow(props: Props) {
     const isoDate = new Date(transaction.date * 1000).toISOString()
     getHistoricalRate(`${currencyCode}_${fiatCurrencyCode}`, isoDate).then(rate => {
       if (isMounted.current) {
-        setAmountFiat(rate * Number(cryptoAmount))
+        setAmountFiat(rate * Number(cryptoExchangeAmount))
       }
     })
   }
@@ -112,7 +112,6 @@ export function TransactionListRow(props: Props) {
     }
     Actions.push('transactionDetails', {
       edgeTransaction: transaction,
-      // @ts-expect-error
       thumbnailPath,
       amountFiat
     })

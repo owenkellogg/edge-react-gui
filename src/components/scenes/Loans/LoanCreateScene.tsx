@@ -55,7 +55,8 @@ export const LoanCreateScene = (props: Props) => {
 
   // Skip directly to LoanStatusScene if an action for the same actionOpType is already being processed
   const existingProgramId = useRunningActionQueueId('loan-create', borrowEngineWallet.id)
-  if (existingProgramId != null) navigation.navigate('loanCreateStatus', { actionQueueId: existingProgramId })
+  const existingLoanAccount = useSelector(state => state.loanManager.loanAccounts[borrowEngineWallet.id])
+  if (existingProgramId != null) navigation.navigate('loanStatus', { actionQueueId: existingProgramId, loanAccountId: existingLoanAccount.id })
 
   // #endregion Initialization
 
@@ -370,16 +371,12 @@ export const LoanCreateScene = (props: Props) => {
   )
 }
 
-// @ts-expect-error
 const getStyles = cacheStyles((theme: Theme) => ({
   cardContainer: {
     alignItems: 'center',
     alignSelf: 'center',
     flexDirection: 'column',
     margin: theme.rem(0.5)
-  },
-  icon: {
-    size: theme.rem(2.5)
   },
   textInitial: {
     alignSelf: 'flex-start',

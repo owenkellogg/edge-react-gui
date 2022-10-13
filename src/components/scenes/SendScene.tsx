@@ -64,8 +64,12 @@ type StateProps = {
 type DispatchProps = {
   reset: () => void
   sendConfirmationUpdateTx: (guiMakeSpendInfo: GuiMakeSpendInfo, selectedWalletId?: string, selectedCurrencyCode?: string, isFeeChanged?: boolean) => void
-  // @ts-expect-error
-  signBroadcastAndSave: (fioSender?: FioSenderInfo, selectedWalletId?: string, selectedCurrencyCode?: string, resetSlider: () => void) => Promise<void>
+  signBroadcastAndSave: (
+    fioSender: FioSenderInfo | undefined,
+    selectedWalletId: string | undefined,
+    selectedCurrencyCode: string | undefined,
+    resetSlider: () => void
+  ) => Promise<void>
   onChangePin: (pin: string) => void
   selectWallet: (walletId: string, currencyCode: string) => void
   getExchangeDenomination: (pluginId: string, currencyCode: string) => EdgeDenomination
@@ -381,7 +385,11 @@ class SendComponent extends React.PureComponent<Props, State> {
   }
 
   renderScamWarning() {
-    return <ScamWarningCard marginRem={[1.5, 1]} />
+    const { recipientAddress } = this.state
+    if (recipientAddress === '') {
+      return <ScamWarningCard marginRem={[1.5, 1]} />
+    }
+    return null
   }
 
   renderAmount() {
@@ -444,8 +452,14 @@ class SendComponent extends React.PureComponent<Props, State> {
 
       return (
         <Tile type={noChangeMiningFee ? 'static' : 'touchable'} title={`${s.strings.string_fee}:`} onPress={this.handleFeesChange}>
-          {/* @ts-expect-error */}
-          <EdgeText style={{ color: feeSyntaxStyle ? theme[feeSyntaxStyle] : theme.primaryText }}>{feeSyntax}</EdgeText>
+          <EdgeText
+            style={{
+              // @ts-expect-error
+              color: feeSyntaxStyle ? theme[feeSyntaxStyle] : theme.primaryText
+            }}
+          >
+            {feeSyntax}
+          </EdgeText>
         </Tile>
       )
     }
@@ -647,8 +661,12 @@ export const SendScene = connect<StateProps, DispatchProps, OwnProps>(
     sendConfirmationUpdateTx(guiMakeSpendInfo: GuiMakeSpendInfo, selectedWalletId?: string, selectedCurrencyCode?: string, isFeeChanged = false) {
       dispatch(sendConfirmationUpdateTx(guiMakeSpendInfo, true, selectedWalletId, selectedCurrencyCode, isFeeChanged))
     },
-    // @ts-expect-error
-    async signBroadcastAndSave(fioSender?: FioSenderInfo, selectedWalletId?: string, selectedCurrencyCode?: string, resetSlider: () => void) {
+    async signBroadcastAndSave(
+      fioSender: FioSenderInfo | undefined,
+      selectedWalletId: string | undefined,
+      selectedCurrencyCode: string | undefined,
+      resetSlider: () => void
+    ) {
       await dispatch(signBroadcastAndSave(fioSender, selectedWalletId, selectedCurrencyCode, resetSlider))
     },
     onChangePin(pin: string) {

@@ -144,8 +144,12 @@ export class MainComponent extends React.Component<Props> {
     return (
       <>
         <RouterWithRedux backAndroidHandler={this.handleBack}>
-          {/* @ts-expect-error */}
-          <Stack key="root" hideNavBar panHandlers={null}>
+          <Stack
+            key="root"
+            hideNavBar
+            // @ts-expect-error
+            panHandlers={null}
+          >
             <Scene key="login" component={withNavigation(LoginScene)} initial />
             <Scene
               key="edgeLogin"
@@ -583,8 +587,11 @@ export class MainComponent extends React.Component<Props> {
             />
           </Stack>
 
-          {/* @ts-expect-error */}
-          <Stack key="settingsOverviewTab" hideDrawerButton>
+          <Stack
+            key="settingsOverviewTab"
+            // @ts-expect-error
+            hideDrawerButton
+          >
             <Scene
               key="settingsOverview"
               component={withNavigation(ifLoggedIn(SettingsScene))}
@@ -718,8 +725,11 @@ export class MainComponent extends React.Component<Props> {
             />
           </Stack>
 
-          {/* @ts-expect-error */}
-          <Stack key="pluginView" hideDrawerButton>
+          <Stack
+            key="pluginView"
+            // @ts-expect-error
+            hideDrawerButton
+          >
             <Scene
               key="pluginView"
               component={withNavigation(ifLoggedIn(GuiPluginViewScene))}
@@ -1029,7 +1039,7 @@ export class MainComponent extends React.Component<Props> {
               onLeft={Actions.pop}
             />
             <Scene
-              key="loanAddCollateralScene"
+              key="loanDeposit"
               component={withNavigation(ifLoggedIn(LoanAddCollateralScene))}
               navTransparent
               // @ts-expect-error
@@ -1040,7 +1050,7 @@ export class MainComponent extends React.Component<Props> {
               renderRightButton={<SideMenuButton />}
             />
             <Scene
-              key="loanWithdrawCollateralScene"
+              key="loanWithdraw"
               component={withNavigation(ifLoggedIn(LoanWithdrawCollateralScene))}
               navTransparent
               // @ts-expect-error
@@ -1051,7 +1061,7 @@ export class MainComponent extends React.Component<Props> {
               renderRightButton={<SideMenuButton />}
             />
             <Scene
-              key="loanRepayScene"
+              key="loanRepay"
               component={withNavigation(ifLoggedIn(LoanMakeLoanPaymentScene))}
               navTransparent
               // @ts-expect-error
@@ -1062,7 +1072,7 @@ export class MainComponent extends React.Component<Props> {
               renderRightButton={<SideMenuButton />}
             />
             <Scene
-              key="loanBorrowMoreScene"
+              key="loanBorrow"
               component={withNavigation(ifLoggedIn(LoanBorrowMoreScene))}
               navTransparent
               // @ts-expect-error
@@ -1085,17 +1095,7 @@ export class MainComponent extends React.Component<Props> {
               onLeft={Actions.pop}
             />
             <Scene
-              key="loanCreateStatus"
-              component={withNavigation(ifLoggedIn(LoanStatusScene))}
-              navTransparent
-              // @ts-expect-error
-              renderLeftButton={<BackButton onPress={this.handleBack} />}
-              // @ts-expect-error
-              renderRightButton={<SideMenuButton />}
-              onLeft={Actions.pop}
-            />
-            <Scene
-              key="loanDetailsStatus"
+              key="loanStatus"
               component={withNavigation(ifLoggedIn(LoanStatusScene))}
               navTransparent
               // @ts-expect-error
@@ -1154,10 +1154,6 @@ export class MainComponent extends React.Component<Props> {
         Actions.popTo('fioAddressRegister')
         return true
       }
-    }
-    if (this.isCurrentScene('loanCreateStatus')) {
-      Actions.jump('loanDashboard', {})
-      return true
     }
     Actions.pop()
     return true
