@@ -18,7 +18,7 @@ import { RightChevronButton } from './ThemedButtons'
 
 export type ExchangeFlipInputFields = 'fiat' | 'crypto'
 
-export interface ExchangedFlipInputGetMethodsResponse {
+export interface ExchangedFlipInputRef {
   setAmount: (field: ExchangeFlipInputFields, value: string) => void
 }
 
@@ -41,7 +41,6 @@ type Props = {
   inputAccessoryViewID?: string
   headerCallback?: () => void
   onAmountChanged: (amounts: ExchangedFlipInputAmounts) => unknown
-  getMethods?: (methods: ExchangedFlipInputGetMethodsResponse) => void
 }
 
 // ExchangedFlipInput2 wraps FlipInput2
@@ -49,13 +48,12 @@ type Props = {
 // 2. Has FlipInput2 only show "display" amounts (ie. sats, bits, mETH)
 // 3. Returns values to parent in fiat exchange amt, crypto exchange amt, and crypto native amt
 
-export const ExchangedFlipInput2 = React.memo((props: Props) => {
+export const ExchangedFlipInput2 = React.forwardRef<ExchangedFlipInputRef, Props>((props: Props, ref) => {
   const {
     walletId,
     tokenId,
     startNativeAmount,
     onAmountChanged,
-    getMethods,
     headerText,
     headerCallback,
     returnKeyType,
@@ -168,22 +166,23 @@ export const ExchangedFlipInput2 = React.memo((props: Props) => {
     const initFiat = convertCurrency(exchangeAmount, cryptoCurrencyCode, fiatCurrencyCode)
     setRenderDisplayAmount(displayAmount)
     setRenderFiatAmount(initFiat)
-    if (getMethods != null) {
-      getMethods({
-        setAmount: (field, value) => {
-          console.log(field, value)
-          if (field === 'crypto') {
-            const { displayAmount, fiatAmount } = convertFromCryptoNative(value)
-            flipInput.current?.setAmounts([displayAmount, fiatAmount])
-          } else if (field === 'fiat') {
-            const { displayAmount } = convertFromFiat(value)
-            flipInput.current?.setAmounts([displayAmount, value])
-          }
-        }
-      })
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  React.useImperativeHandle(ref, () => {
+    return {
+      setAmount: (field, value) => {
+        console.log(field, value)
+        if (field === 'crypto') {
+          const { displayAmount, fiatAmount } = convertFromCryptoNative(value)
+          flipInput.current?.setAmounts([displayAmount, fiatAmount])
+        } else if (field === 'fiat') {
+          const { displayAmount } = convertFromFiat(value)
+          flipInput.current?.setAmounts([displayAmount, value])
+        }
+      }
+    }
+  })
 
   const overrideForceField = useMemo(
     () => (convertCurrency('100', cryptoCurrencyCode, fiatCurrencyCode) === '0' ? 'crypto' : forceField),
