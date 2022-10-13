@@ -91,6 +91,7 @@ pipeline {
           branch 'test-paneer'
           branch 'test'
           branch 'yolo'
+          branch 'coinhub'
         }
       }
       stages {
