@@ -9,6 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install npm dependencies
         run: |
+          node --version
           yarn
   build-android:
     needs: install-and-test
