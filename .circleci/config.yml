@@ -10,7 +10,7 @@ jobs:
           key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Explicitly install yarn
-          command: npm install --global yarn
+          command: sudo npm install --global yarn
       - run:
           name: Install Dependencies
           command: yarn
