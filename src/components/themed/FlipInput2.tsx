@@ -9,6 +9,7 @@ import { formatNumberInput, isValidInput } from '../../locales/intl'
 import s from '../../locales/strings'
 import { useState } from '../../types/reactHooks'
 import { NumericInput } from '../modals/NumericInput'
+import { showError } from '../services/AirshipInstance'
 import { cacheStyles, Theme, useTheme } from '../services/ThemeContext'
 import { EdgeText } from './EdgeText'
 import { ButtonBox } from './ThemedButtons'
@@ -17,6 +18,7 @@ export interface FlipInputGetMethodsResponse {
   setAmounts: (value: string[]) => void
 }
 
+export type FieldNum = 0 | 1
 export type FlipInputFieldInfo = {
   currencyName: string
 
@@ -27,15 +29,18 @@ export type FlipInputFieldInfo = {
 
 export interface FlipInputProps {
   onNext?: () => void
-  convertValue: (sourceFieldNum: number, value: string) => Promise<string | undefined>
+  convertValue: (sourceFieldNum: FieldNum, value: string) => Promise<string | undefined>
   getMethods?: (methods: FlipInputGetMethodsResponse) => void
-  startAmounts: string[]
+  startAmounts: [string, string]
   inputAccessoryViewID?: string
   fieldInfos: FlipInputFieldInfo[]
   topReturnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send'
 }
 
 const FLIP_DURATION = 500
+const flipField = (fieldNum: FieldNum): FieldNum => {
+  return fieldNum === 0 ? 1 : 0
+}
 
 export const FlipInput2 = React.memo((props: FlipInputProps) => {
   const theme = useTheme()
@@ -46,10 +51,10 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
   const animatedValue = useSharedValue(0)
 
   // `amounts` is always a 2-tuple
-  const [amounts, setAmounts] = useState<string[]>(startAmounts)
+  const [amounts, setAmounts] = useState<[string, string]>(startAmounts)
 
   // primaryField is the index into the 2-tuple, 0 or 1
-  const [primaryField, setPrimaryField] = useState<number>(0)
+  const [primaryField, setPrimaryField] = useState<FieldNum>(0)
 
   const frontAnimatedStyle = useAnimatedStyle(() => {
     const degrees = interpolate(animatedValue.value, [0, 0.5, 1], [0, 90, 90])
@@ -67,7 +72,7 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
   const onToggleFlipInput = useHandler(() => {
     const jsCallback: AnimationCallback = done => {
       'worklet'
-      if (done) runOnJS(setPrimaryField)(Number(!primaryField))
+      if (done) runOnJS(setPrimaryField)(primaryField ? 0 : 1)
     }
     inputRefs[primaryField].current?.blur()
     inputRefs[Number(!primaryField)].current?.focus()
@@ -100,17 +105,17 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     convertValue(primaryField, text)
       .then(amount => {
         if (amount != null) {
-          const otherField = Number(!primaryField)
-          const newAmounts = []
+          const otherField = flipField(primaryField)
+          const newAmounts: [string, string] = ['', '']
           newAmounts[primaryField] = text
           newAmounts[otherField] = amount
           setAmounts(newAmounts)
         }
       })
-      .catch(e => console.log(e.message))
+      .catch(e => showError(e.message))
   })
 
-  const bottomRow = useHandler((fieldNum: number) => {
+  const bottomRow = useHandler((fieldNum: FieldNum) => {
     const primaryAmount = amounts[fieldNum]
     const amountBlank = eq(primaryAmount, '0')
     const currencyNameStyle = amountBlank ? styles.bottomCurrencyMuted : styles.bottomCurrency
@@ -138,7 +143,7 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     )
   })
 
-  const topRow = useHandler((fieldNum: number) => {
+  const topRow = useHandler((fieldNum: FieldNum) => {
     let topText = amounts[fieldNum]
     if (isValidInput(topText)) {
       topText = formatNumberInput(topText, { minDecimals: 0, maxDecimals: fieldInfos[fieldNum].maxEntryDecimals })
@@ -153,8 +158,6 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     )
   })
 
-  if (startAmounts.length !== 2 || fieldInfos.length !== 2) throw new Error('Invalid number of startAmounts or fieldInfos')
-
   useEffect(() => {
     if (getMethods != null)
       getMethods({
@@ -168,7 +171,7 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     <>
       <View style={styles.flipInputContainer}>
         <View style={styles.flipInput}>
-          <Animated.View style={[styles.flipInputFront, frontAnimatedStyle]} pointerEvents={!primaryField ? 'auto' : 'none'}>
+          <Animated.View style={[styles.flipInputFront, frontAnimatedStyle]} pointerEvents={flipField(primaryField) ? 'auto' : 'none'}>
             {topRow(1)}
             {bottomRow(0)}
           </Animated.View>
