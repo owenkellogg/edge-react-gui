@@ -19,16 +19,17 @@ export interface FlipInputGetMethodsResponse {
 }
 
 export type FieldNum = 0 | 1
+
 export type FlipInputFieldInfo = {
   currencyName: string
 
-  // Maximum number of decimals to allow the user to enter. FlipInput will automatically truncate use input to this
+  // Maximum number of decimals to allow the user to enter.
+  // FlipInput will automatically truncate use input to this
   // number of decimals as the user types.
   maxEntryDecimals: number
 }
 
-type TextInputTuple = [TextInput | null, TextInput | null]
-export interface FlipInputProps {
+interface Props {
   onNext?: () => void
   convertValue: (sourceFieldNum: FieldNum, value: string) => Promise<string | undefined>
   getMethods?: (methods: FlipInputGetMethodsResponse) => void
@@ -41,16 +42,7 @@ export interface FlipInputProps {
   editable?: boolean
 }
 
-const FLIP_DURATION = 500
-const flipField = (fieldNum: FieldNum): FieldNum => {
-  return fieldNum === 0 ? 1 : 0
-}
-
-export const FlipInput2 = React.memo((props: FlipInputProps) => {
-  const theme = useTheme()
-  const styles = getStyles(theme)
-  const [inputRefs, setInputRefs] = useState<TextInputTuple>([null, null])
-
+export const FlipInput2 = React.memo((props: Props) => {
   const {
     startAmounts,
     fieldInfos,
@@ -63,6 +55,11 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     forceFieldNum = 0,
     editable
   } = props
+
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const inputRefs = [React.useRef<TextInput>(null), React.useRef<TextInput>(null)]
+
   const animatedValue = useSharedValue(forceFieldNum)
 
   // `amounts` is always a 2-tuple
@@ -90,8 +87,8 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
       if (done) runOnJS(setPrimaryField)(primaryField ? 0 : 1)
     }
 
-    inputRefs[primaryField]?.blur()
-    inputRefs[Number(!primaryField)]?.focus()
+    inputRefs[primaryField].current?.blur()
+    inputRefs[flipField(primaryField)].current?.focus()
 
     if (primaryField) {
       console.log('animating to 0')
@@ -150,13 +147,7 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
             autoCorrect={false}
             editable={editable}
             returnKeyType={returnKeyType}
-            ref={ref => {
-              if (ref != null && inputRefs[fieldNum] == null) {
-                const tempRefsArray: TextInputTuple = [...inputRefs]
-                tempRefsArray[fieldNum] = ref
-                setInputRefs(tempRefsArray)
-              }
-            }}
+            ref={inputRefs[fieldNum]}
             onSubmitEditing={onNext}
             inputAccessoryViewID={inputAccessoryViewID}
           />
@@ -193,10 +184,11 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
   useEffect(() => {
     if (inputRefs[0] != null && inputRefs[1] != null) {
       if (keyboardVisible) {
-        inputRefs[primaryField]?.focus()
+        inputRefs[primaryField].current?.focus()
       }
     }
-  }, [inputRefs])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyboardVisible, primaryField])
 
   return (
     <>
@@ -218,6 +210,12 @@ export const FlipInput2 = React.memo((props: FlipInputProps) => {
     </>
   )
 })
+
+const FLIP_DURATION = 500
+
+const flipField = (fieldNum: FieldNum): FieldNum => {
+  return fieldNum === 0 ? 1 : 0
+}
 
 const getStyles = cacheStyles((theme: Theme) => ({
   // Header

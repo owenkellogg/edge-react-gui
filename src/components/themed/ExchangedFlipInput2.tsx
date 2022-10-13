@@ -29,7 +29,7 @@ export type ExchangedFlipInputAmounts = {
   fieldChanged: 'fiat' | 'crypto'
 }
 
-export type ExchangedFlipInputProps = {
+type Props = {
   walletId: string
   tokenId?: string
   startNativeAmount?: string
@@ -44,17 +44,12 @@ export type ExchangedFlipInputProps = {
   getMethods?: (methods: ExchangedFlipInputGetMethodsResponse) => void
 }
 
-const forceFieldMap: { crypto: FieldNum; fiat: FieldNum } = {
-  crypto: 0,
-  fiat: 1
-}
-
 // ExchangedFlipInput2 wraps FlipInput2
 // 1. It accepts native crypto amounts from the parent for initial amount and setAmount
 // 2. Has FlipInput2 only show "display" amounts (ie. sats, bits, mETH)
 // 3. Returns values to parent in fiat exchange amt, crypto exchange amt, and crypto native amt
 
-export const ExchangedFlipInput2 = React.memo((props: ExchangedFlipInputProps) => {
+export const ExchangedFlipInput2 = React.memo((props: Props) => {
   const {
     walletId,
     tokenId,
@@ -191,9 +186,13 @@ export const ExchangedFlipInput2 = React.memo((props: ExchangedFlipInputProps) =
         }
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const overrideForceField = useMemo(() => (convertCurrency('100', cryptoCurrencyCode, fiatCurrencyCode) === '0' ? 'crypto' : forceField), [exchangeRates])
+  const overrideForceField = useMemo(
+    () => (convertCurrency('100', cryptoCurrencyCode, fiatCurrencyCode) === '0' ? 'crypto' : forceField),
+    [convertCurrency, cryptoCurrencyCode, fiatCurrencyCode, forceField]
+  )
 
   return (
     <>
@@ -222,6 +221,11 @@ export const ExchangedFlipInput2 = React.memo((props: ExchangedFlipInputProps) =
     </>
   )
 })
+
+const forceFieldMap: { crypto: FieldNum; fiat: FieldNum } = {
+  crypto: 0,
+  fiat: 1
+}
 
 const getStyles = cacheStyles((theme: Theme) => ({
   // Header
