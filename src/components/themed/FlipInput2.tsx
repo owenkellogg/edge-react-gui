@@ -14,7 +14,7 @@ import { cacheStyles, Theme, useTheme } from '../services/ThemeContext'
 import { EdgeText } from './EdgeText'
 import { ButtonBox } from './ThemedButtons'
 
-export interface FlipInputGetMethodsResponse {
+export interface FlipInputRef {
   setAmounts: (value: string[]) => void
 }
 
@@ -32,7 +32,6 @@ export type FlipInputFieldInfo = {
 interface Props {
   onNext?: () => void
   convertValue: (sourceFieldNum: FieldNum, value: string) => Promise<string | undefined>
-  getMethods?: (methods: FlipInputGetMethodsResponse) => void
   startAmounts: [string, string]
   forceFieldNum?: FieldNum
   keyboardVisible?: boolean
@@ -42,19 +41,8 @@ interface Props {
   editable?: boolean
 }
 
-export const FlipInput2 = React.memo((props: Props) => {
-  const {
-    startAmounts,
-    fieldInfos,
-    keyboardVisible,
-    returnKeyType = 'done',
-    onNext,
-    inputAccessoryViewID,
-    getMethods,
-    convertValue,
-    forceFieldNum = 0,
-    editable
-  } = props
+export const FlipInput2 = React.forwardRef<FlipInputRef, Props>((props: Props, ref) => {
+  const { startAmounts, fieldInfos, keyboardVisible, returnKeyType = 'done', onNext, inputAccessoryViewID, convertValue, forceFieldNum = 0, editable } = props
 
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -172,14 +160,11 @@ export const FlipInput2 = React.memo((props: Props) => {
     )
   })
 
-  useEffect(() => {
-    if (getMethods != null)
-      getMethods({
-        setAmounts: amounts => {
-          setAmounts([amounts[0], amounts[1]])
-        }
-      })
-  })
+  React.useImperativeHandle(ref, () => ({
+    setAmounts: amounts => {
+      setAmounts([amounts[0], amounts[1]])
+    }
+  }))
 
   useEffect(() => {
     if (inputRefs[0] != null && inputRefs[1] != null) {

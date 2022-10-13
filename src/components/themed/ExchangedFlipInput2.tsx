@@ -13,7 +13,7 @@ import { DECIMAL_PRECISION, getDenomFromIsoCode, maxPrimaryCurrencyConversionDec
 import { CryptoIcon } from '../icons/CryptoIcon'
 import { cacheStyles, Theme, useTheme } from '../services/ThemeContext'
 import { EdgeText } from './EdgeText'
-import { FieldNum, FlipInput2, FlipInputFieldInfo, FlipInputGetMethodsResponse } from './FlipInput2'
+import { FieldNum, FlipInput2, FlipInputFieldInfo, FlipInputRef } from './FlipInput2'
 import { RightChevronButton } from './ThemedButtons'
 
 export type ExchangeFlipInputFields = 'fiat' | 'crypto'
@@ -73,7 +73,7 @@ export const ExchangedFlipInput2 = React.memo((props: Props) => {
   const currencyWallets = useWatch(account, 'currencyWallets')
   const coreWallet: EdgeCurrencyWallet | undefined = currencyWallets[walletId]
   const fiatCurrencyCode = useWatch(coreWallet, 'fiatCurrencyCode')
-  let methods: FlipInputGetMethodsResponse | undefined
+  const flipInput = React.useRef<FlipInputRef>(null)
 
   const pluginId = coreWallet?.currencyInfo.pluginId ?? ''
   const cryptoCurrencyCode = getCurrencyCode(coreWallet, tokenId)
@@ -96,10 +96,6 @@ export const ExchangedFlipInput2 = React.memo((props: Props) => {
     const rateKey = `${fromCurrencyCode}_${toCurrencyCode}`
     const rate = exchangeRates[rateKey] ?? '0'
     return mul(amount, rate)
-  })
-
-  const getFlipInputMethods = useHandler(m => {
-    methods = m
   })
 
   const convertFromCryptoNative = useHandler((nativeAmount: string) => {
@@ -178,10 +174,10 @@ export const ExchangedFlipInput2 = React.memo((props: Props) => {
           console.log(field, value)
           if (field === 'crypto') {
             const { displayAmount, fiatAmount } = convertFromCryptoNative(value)
-            methods?.setAmounts([displayAmount, fiatAmount])
+            flipInput.current?.setAmounts([displayAmount, fiatAmount])
           } else if (field === 'fiat') {
             const { displayAmount } = convertFromFiat(value)
-            methods?.setAmounts([displayAmount, value])
+            flipInput.current?.setAmounts([displayAmount, value])
           }
         }
       })
@@ -204,13 +200,13 @@ export const ExchangedFlipInput2 = React.memo((props: Props) => {
           </TouchableOpacity>
 
           <FlipInput2
+            ref={flipInput}
             convertValue={convertValue}
             editable={editable}
             fieldInfos={fieldInfos}
             returnKeyType={returnKeyType}
             forceFieldNum={forceFieldMap[overrideForceField]}
             inputAccessoryViewID={inputAccessoryViewID}
-            getMethods={getFlipInputMethods}
             keyboardVisible={keyboardVisible}
             startAmounts={[renderDisplayAmount ?? '', renderFiatAmount]}
           />
