@@ -2,7 +2,7 @@ import { EdgeLobby } from 'edge-core-js'
 import * as React from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
-import { isIPhoneX } from 'react-native-safe-area-view'
+import isIPhoneX from 'react-native-safe-area-view'
 import { sprintf } from 'sprintf-js'
 
 import { lobbyLogin } from '../../actions/EdgeLoginActions'

@@ -1,6 +1,6 @@
 import { Dimensions, Platform } from 'react-native'
 import ExtraDimensions from 'react-native-extra-dimensions-android'
-import { isIPhoneX } from 'react-native-safe-area-view'
+import isIPhoneX from 'react-native-safe-area-view'
 
 export const deviceWidth = Dimensions.get('window').width
 export const deviceHeight = Platform.OS === 'ios' ? Dimensions.get('window').height : ExtraDimensions.get('REAL_WINDOW_HEIGHT')
