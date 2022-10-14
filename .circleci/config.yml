@@ -15,7 +15,7 @@ jobs:
           command: cp env-example.json env.json
       - run:
           name: Install Dependencies
-          command: yarn
+          command: yarn --force
             #- save_cache:
             #key: dependency-cache-{{ checksum "yarn.lock" }}
             #paths:
