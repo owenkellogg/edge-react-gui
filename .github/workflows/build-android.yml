@@ -10,7 +10,7 @@ jobs:
       - name: Install npm dependencies
         run: |
           node --version
-          yarn
+          yarn upgrade
   build-android:
     needs: install-and-test
     runs-on: ubuntu-latest
