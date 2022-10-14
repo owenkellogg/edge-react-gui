@@ -15,10 +15,10 @@ jobs:
           command: cp env-example.json env.json
       - run:
           name: Remove yarn cache
-          command: sudo rm -rf /home/circleci/.cache/yarn
+          command: yarn upgrade
       - run:
           name: Install Dependencies
-          command: npm install
+          command: yarn
             #command: yarn --force
             #- save_cache:
             #key: dependency-cache-{{ checksum "yarn.lock" }}
