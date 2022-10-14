@@ -6835,9 +6835,9 @@ envinfo@^7.7.2, envinfo@^7.7.3:
   resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-7.8.1.tgz#06377e3e5f4d379fea7ac592d5ad8927e0c4d475"
   integrity sha512-/o+BXHmB7ocbHEAs6F2EnG0ogybVVUdkRunTT2glZU9XAaGmhqskrvKwqXuDfNjEO0LZKWdejEEpnq8aM0tOaw==
 
-"eosjs-api@https://github.com/EdgeApp/eosjs-api.git#3676348b6a7443389b28d21c98067760c51e02fb", "eosjs-api@https://github.com/EdgeApp/eosjs-api.git#prepare-script":
+"eosjs-api@https://github.com/EdgeApp/eosjs-api.git", "eosjs-api@https://github.com/EdgeApp/eosjs-api.git#3676348b6a7443389b28d21c98067760c51e02fb":
   version "7.0.4"
-  resolved "https://github.com/EdgeApp/eosjs-api.git#3676348b6a7443389b28d21c98067760c51e02fb"
+  resolved "https://github.com/EdgeApp/eosjs-api.git#f0077306c7bbde4dd4e1ebaa7de52d5827613842"
   dependencies:
     camel-case "^3.0.0"
     isomorphic-fetch "^2.2.1"

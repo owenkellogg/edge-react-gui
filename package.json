@@ -64,7 +64,7 @@
     "create-hash": "1.2.0",
     "deprecated-react-native-listview": "0.0.7",
     "elliptic": "6.4.1",
-    "eosjs-api": "https://github.com/EdgeApp/eosjs-api.git#prepare-script",
+    "eosjs-api": "https://github.com/EdgeApp/eosjs-api.git",
     "hash-base": "3.0.4",
     "hdkey": "1.1.1",
     "inherits": "2.0.4",
