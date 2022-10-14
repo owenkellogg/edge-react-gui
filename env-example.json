@@ -1,0 +1,114 @@
+{
+  "-------- api keys --------": 0,
+  "AIRBITZ_API_KEY": "",
+  "BUGSNAG_API_KEY": "",
+  "-------- GUI plugin options --------": 0,
+  "PLUGIN_API_KEYS": {
+    "Bitrefill": ""
+  },
+  "-------- core plugin options (remove `x_` to activate) --------": 0,
+  "x_CHANGELLY_INIT": {
+    "apiKey": "",
+    "secret": ""
+  },
+  "x_CHANGE_NOW_INIT": {
+    "apiKey": ""
+  },
+  "x_CURRENCYCONVERTERAPI_INIT": {
+    "apiKey": ""
+  },
+  "x_ETHEREUM_INIT": {
+    "evmScanApiKey": [],
+    "infuraProjectId": "",
+    "blockchairApiKey": "",
+    "alethioApiKey": "",
+    "gasStationApiKey": "",
+    "amberdataApiKey": ""
+  },
+  "x_BINANCE_SMART_CHAIN_INIT": {
+    "evmScanApiKey": []
+  },
+  "x_EXOLIX_INIT": {
+    "apiKey": ""
+  },
+  "X_FANTOM_INIT": {
+    "evmScanApiKey": ""
+  },
+  "x_POLYGON_INIT": {
+    "evmScanApiKey": []
+  },
+  "x_FOX_INIT": {
+    "apiKey": ""
+  },
+  "x_GODEX_INIT": {
+    "apiKey": ""
+  },
+  "x_MONERO_INIT": {
+    "apiKey": ""
+  },
+  "x_NOMICS_INIT": {
+    "apiKey": ""
+  },
+  "x_SWITCHAIN_INIT": {
+    "apiKey": ""
+  },
+  "X_FIO_INIT": {
+    "fioRegApiToken": ""
+  },
+  "X_SIDESHIFT_INIT": {
+    "affiliateId": ""
+  },
+  "-------- app options --------": 0,
+  "USE_FAKE_CORE": false,
+  "USE_FIREBASE": true,
+  "YOLO_DEEP_LINK": null,
+  "YOLO_PASSWORD": null,
+  "YOLO_USERNAME": null,
+  "-------- debug options --------": 0,
+  "DEBUG_CORE": false,
+  "DEBUG_PLUGINS": false,
+  "DEBUG_VERBOSE_ERRORS": false,
+  "IP_API_KEY": "",
+  "ACTION_QUEUE": {
+    "debugStore": false,
+    "enableDryrun": true,
+    "pushServerUri": "https://push.edge.app",
+    "mockMode": false
+  },
+  "WYRE_CLIENT_INIT": {
+    "baseUri": "https://api.sendwyre.com"
+  },
+  "AZTECO_API_KEY": null,
+  "BINANCE_SMART_CHAIN_INIT": false,
+  "CHANGE_NOW_INIT": false,
+  "CHANGEHERO_INIT": false,
+  "CURRENCYCONVERTERAPI_INIT": false,
+  "ETHEREUM_INIT": false,
+  "EXOLIX_INIT": false,
+  "FANTOM_INIT": false,
+  "FIO_INIT": true,
+  "FOX_INIT": false,
+  "GODEX_INIT": false,
+  "KOVAN_INIT": false,
+  "LETSEXCHANGE_INIT": false,
+  "MONERO_INIT": false,
+  "NOMICS_INIT": false,
+  "POLYGON_INIT": false,
+  "SIDESHIFT_INIT": false,
+  "SPOOKY_SWAP_INIT": false,
+  "SWITCHAIN_INIT": false,
+  "THORCHAIN_INIT": false,
+  "TOMB_SWAP_INIT": false,
+  "APP_CONFIG": "edge",
+  "BETA_FEATURES": false,
+  "BETA_FEATURES_DEV_MODE_ONLY": false,
+  "YOLO_PIN": null,
+  "DEBUG_THEME": false,
+  "DISABLE_WARNINGS": false,
+  "ENABLE_REDUX_PERF_LOGGING": false,
+  "LOG_SERVER": null,
+  "THEME_SERVER": {
+    "host": "localhost",
+    "port": "8008"
+  }
+}

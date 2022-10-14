@@ -11,8 +11,8 @@ jobs:
             #name: Explicitly install yarn
             #command: sudo npm install --global --force yarn
       - run:
-          name: Yarn version
-          command: yarn --version
+          name: Copy env.json
+          command: cp env-example.json env.json
       - run:
           name: Install Dependencies
           command: yarn
