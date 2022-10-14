@@ -14,6 +14,9 @@ jobs:
           name: Copy env.json
           command: cp env-example.json env.json
       - run:
+          name: Remove yarn cache
+          command: sudo rm -rf /home/circleci/.cache/yarn
+      - run:
           name: Install Dependencies
           command: yarn --force
             #- save_cache:
